@@ -179,6 +179,8 @@ class Tester():
         logging.info(total_weights_string)
         logging.info(total_sparsity_ratio)
 
+        print("Logging done successfully!")
+
     def plot_results(self, testing_history, test_input, test_target):
 
         """ Generates and saves a plot of the testing history of the model against the (actual) 

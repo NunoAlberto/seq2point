@@ -11,15 +11,20 @@ def create_model(input_window_length):
     """
 
     input_layer = tf.keras.layers.Input(shape=(input_window_length,))
-    reshape_layer = tf.keras.layers.Reshape((1, input_window_length, 1))(input_layer)
-    conv_layer_1 = tf.keras.layers.Convolution2D(filters=30, kernel_size=(10, 1), strides=(1, 1), padding="same", activation="relu")(reshape_layer)
+    reshape_layer_1 = tf.keras.layers.Reshape((1, input_window_length, 1))(input_layer)
+    conv_layer_1 = tf.keras.layers.Convolution2D(filters=30, kernel_size=(10, 1), strides=(1, 1), padding="same", activation="relu")(reshape_layer_1)
     conv_layer_2 = tf.keras.layers.Convolution2D(filters=30, kernel_size=(8, 1), strides=(1, 1), padding="same", activation="relu")(conv_layer_1)
     conv_layer_3 = tf.keras.layers.Convolution2D(filters=40, kernel_size=(6, 1), strides=(1, 1), padding="same", activation="relu")(conv_layer_2)
     conv_layer_4 = tf.keras.layers.Convolution2D(filters=50, kernel_size=(5, 1), strides=(1, 1), padding="same", activation="relu")(conv_layer_3)
     conv_layer_5 = tf.keras.layers.Convolution2D(filters=50, kernel_size=(5, 1), strides=(1, 1), padding="same", activation="relu")(conv_layer_4)
-    flatten_layer = tf.keras.layers.Flatten()(conv_layer_5)
-    label_layer = tf.keras.layers.Dense(1024, activation="relu")(flatten_layer)
-    output_layer = tf.keras.layers.Dense(1, activation="linear")(label_layer)
+    #flatten_layer = tf.keras.layers.Flatten()(conv_layer_5)
+    reshape_layer_2 = tf.keras.layers.Reshape((input_window_length, 50))(conv_layer_5)
+    #256, 512, 1024
+    biDirectionalLstm_layer = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(256, activation="tanh", return_sequences=False), merge_mode="concat")(reshape_layer_2)
+    #flatten_layer = tf.keras.layers.Flatten()(conv_layer_5)
+    label_layer = tf.keras.layers.Dense(256, activation="relu")(biDirectionalLstm_layer)
+    dropout_layer = tf.keras.layers.Dropout(rate=0.5)(label_layer)
+    output_layer = tf.keras.layers.Dense(1, activation="linear")(dropout_layer)
 
     model = tf.keras.Model(inputs=input_layer, outputs=output_layer)
     return model

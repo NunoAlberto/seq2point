@@ -117,6 +117,8 @@ class Trainer():
         ###################################################################
 
         callbacks=[early_stopping]
+
+        model.summary()
         
         training_history = self.default_train(model, callbacks, steps_per_training_epoch)
 

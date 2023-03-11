@@ -8,4 +8,4 @@
 cd "${SLURM_SUBMIT_DIR}"
 
 # Hello World program
-python train_main.py --appliance_name microwave
+python train_main.py --appliance_name microwave --crop 1571848 --epochs 100
