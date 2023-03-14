@@ -104,7 +104,7 @@ class Trainer():
         early_stopping = tf.keras.callbacks.EarlyStopping(monitor="val_loss", min_delta=self.__min_delta, patience=self.__patience, verbose=self.__verbose, mode="min", restore_best_weights=True)
 
         ## can use checkpoint ###############################################
-        """checkpoint_filepath = "./checkpoints/"+ self.__appliance + ".{epoch:03d}-{val_loss:.5f}.h5"
+        checkpoint_filepath = "./checkpoints/"+ self.__appliance + ".{epoch:03d}-{val_loss:.5f}.h5"
         model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
              filepath = checkpoint_filepath,
              monitor='val_loss',
@@ -113,10 +113,10 @@ class Trainer():
              mode='min',
              save_freq="epoch",
              save_best_only=False)        
-        callbacks=[early_stopping, model_checkpoint_callback]"""
+        callbacks=[early_stopping, model_checkpoint_callback]
         ###################################################################
 
-        callbacks=[early_stopping]
+        #callbacks=[early_stopping]
 
         model.summary()
         

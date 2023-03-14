@@ -1,0 +1,4 @@
+INFO:root:('Model values - MAE: ', '674.359631429206', ' SAE: ', '5394877.051433648')
+INFO:root:('Real values - MAE: ', '526028.0168317626', ' SAE: ', '4208224134.6541014')
+INFO:root:('Model values - MAE: ', '713.0289702989477', ' SAE: ', '5704231.762391581')
+INFO:root:('Real values - MAE: ', '484192.62340543495', ' SAE: ', '3873540987.2434797')

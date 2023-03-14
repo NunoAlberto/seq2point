@@ -38,8 +38,9 @@ class Tester():
         self._input_window_length = input_window_length
         self.__window_size = self._input_window_length + 2
         self.__window_offset = int(0.5 * self.__window_size - 1)
-        self.__number_of_windows = 800
-        #self.__number_of_windows = 100
+        #self.__number_of_windows = 800
+        self.__number_of_windows = 100
+        #self.__number_of_windows = 129
         #self.__number_of_windows = 550
         #self.__number_of_windows = 80
 
@@ -224,7 +225,7 @@ class Tester():
 
         print(test_agg.shape, test_target.shape, testing_history.shape)
 
-        plt.figure(2)
+        """plt.figure(2)
         plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
         plt.plot(test_target[:test_agg.size - (2 * self.__window_offset)], label="Ground Truth")
         #plt.plot(testing_history[:test_agg.size - (2 * self.__window_offset)], label="Predicted")
@@ -294,6 +295,6 @@ class Tester():
         plt.legend()
 
         file_path = "./" + "saved_models/" + self.__appliance + "_" + self.__algorithm + "_" + self.__network_type + "_test_figure (predicted).png"
-        plt.savefig(fname=file_path)
+        plt.savefig(fname=file_path)"""
 
         #plt.show()
