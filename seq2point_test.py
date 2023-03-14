@@ -220,7 +220,7 @@ class Tester():
         plt.xlabel("Testing Window")
         plt.legend()
 
-        file_path = "./" + "saved_models/" + self.__appliance + "_" + self.__algorithm + "_" + self.__network_type + "_test_figure (everything).png"
+        file_path = "./" + "saved_models/" + self.__appliance + "_" + self.__algorithm + "_" + self.__network_type + "_test_figure(everything).png"
         plt.savefig(fname=file_path)
 
         print(test_agg.shape, test_target.shape, testing_history.shape)
