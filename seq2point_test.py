@@ -38,8 +38,8 @@ class Tester():
         self._input_window_length = input_window_length
         self.__window_size = self._input_window_length + 2
         self.__window_offset = int(0.5 * self.__window_size - 1)
-        #self.__number_of_windows = 800
-        self.__number_of_windows = 100
+        self.__number_of_windows = 800
+        #self.__number_of_windows = 100
         #self.__number_of_windows = 129
         #self.__number_of_windows = 550
         #self.__number_of_windows = 80
