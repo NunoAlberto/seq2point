@@ -79,20 +79,20 @@ class Tester():
         test_generator = TestSlidingWindowGenerator(number_of_windows=self.__number_of_windows, inputs=test_input, targets=test_target, offset=self.__window_offset)
 
         # Calculate the optimum steps per epoch.
-        steps_per_test_epoch = np.round(int(test_generator.total_size / self.__number_of_windows), decimals=0)
-        #steps_per_test_epoch = np.round(int(test_generator.total_num_samples / self.__batch_size), decimals=0)
+        #steps_per_test_epoch = np.round(int(test_generator.total_size / self.__number_of_windows), decimals=0)
+        steps_per_test_epoch = np.round(int(test_generator.total_size / self.__batch_size), decimals=0)
         print("steps_per_test_epoch old: " + str(steps_per_test_epoch))
-        print("steps_per_test_epoch new: " + str(test_generator.max_number_of_windows/self.__number_of_windows))
+        print("steps_per_test_epoch new: " + str(math.floor(test_generator.max_number_of_windows/self.__number_of_windows)-1))
 
         # Test the model.
         start_time = time.time()
         #testing_history = model.predict(x=test_generator.load_dataset(), steps=steps_per_test_epoch, verbose=2)
-        testing_history = model.predict(x=test_generator.load_dataset(), steps=math.floor(test_generator.max_number_of_windows/self.__number_of_windows)-1, verbose=2)
+        testing_history = model.predict(x=test_generator.load_dataset(), steps=10, verbose=2)
 
         end_time = time.time()
         test_time = end_time - start_time
 
-        evaluation_metrics = model.evaluate(x=test_generator.load_dataset(), steps=steps_per_test_epoch)
+        evaluation_metrics = model.evaluate(x=test_generator.load_dataset(), steps=10)
 
         self.log_results(model, test_time, evaluation_metrics)
         self.plot_results(testing_history, test_input, test_target)

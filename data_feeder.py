@@ -188,11 +188,11 @@ class TestSlidingWindowGenerator(object):
         print("__number_of_windows:" + str(self.__number_of_windows))
         indicies = np.arange(self.max_number_of_windows, dtype=int)
         for start_index in range(0, self.max_number_of_windows, self.__number_of_windows):
-            print("start_index:" + str(start_index))
-            print("start_index + self.__number_of_windows:" + str(start_index + self.__number_of_windows))
+            """print("start_index:" + str(start_index))
+            print("start_index + self.__number_of_windows:" + str(start_index + self.__number_of_windows))"""
             splice = indicies[start_index : start_index + self.__number_of_windows]
             input_data = np.array([self.__inputs[index : index + 2 * self.__offset + 1] for index in splice])
-            print("splice:" + str(splice))
-            print("self.__offset:" + str(self.__offset))
+            """print("splice:" + str(splice))
+            print("self.__offset:" + str(self.__offset))"""
             target_data = self.__targets[splice + self.__offset].reshape(-1, 1)
             yield input_data, target_data
