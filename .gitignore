@@ -2,3 +2,5 @@ __pycache__/
 **/.DS_Store
 dataset_management/redd/__pycache__/
 *.h5
+
+!saved_models/finalised_models/*
