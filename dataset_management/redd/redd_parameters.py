@@ -18,9 +18,9 @@ params_appliance = {
         'mean': 200,
         'std': 400,
         's2s_length': 512,
-        'houses': [1, 2, 3],
-        'channels': [5, 9, 7],
-        'train_build': [2, 3],
+        'houses': [1, 2, 3, 6, 5],
+        'channels': [5, 9, 7, 8, 18],
+        'train_build': [2, 3, 5, 6],
         'test_build': 1
     },
     'dishwasher': {

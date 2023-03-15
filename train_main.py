@@ -3,18 +3,20 @@ from remove_space import remove_space
 from seq2point_train import Trainer
 # Allows a model to be trained from the terminal.
 
-#training_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddMicrowave/microwave_training_.csv"
-#validation_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddMicrowave/microwave_validation_.csv"
-training_directory="C:/Users/gz20955/Desktop/seq2point/reddMicrowave/microwave_training_.csv"
-validation_directory="C:/Users/gz20955/Desktop/seq2point/reddMicrowave/microwave_validation_.csv"
+training_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddFridge/fridge_training_.csv"
+validation_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddFridge/fridge_validation_.csv"
+#training_directory="C:/Users/gz20955/Desktop/seq2point/reddMicrowave/microwave_training_.csv"
+#validation_directory="C:/Users/gz20955/Desktop/seq2point/reddMicrowave/microwave_validation_.csv"
 
 parser = argparse.ArgumentParser(description="Train sequence-to-point learning for energy disaggregation. ")
 
 parser.add_argument("--appliance_name", type=remove_space, default="kettle", help="The name of the appliance to train the network with. Default is kettle. Available are: kettle, fridge, washing machine, dishwasher, and microwave. ")
 parser.add_argument("--batch_size", type=int, default="1000", help="The batch size to use when training the network. Default is 1000. ")
 # full microwave training set: 1907247 rows (terminal wc -l)
+# full fridge training set: 921148 rows (terminal wc -l)
 parser.add_argument("--cropTrainingData", type=int, default="10000", help="The number of rows of the dataset to take training data from. Default is 10000. ")
 # full microwave validation set - 211914 rows (terminal wc -l)
+# full fridge validation set - 102348 rows (terminal wc -l)
 parser.add_argument("--cropValidationData", type=int, default="10000", help="The number of rows of the dataset to take training data from. Default is 10000. ")
 #parser.add_argument("--pruning_algorithm", type=remove_space, default="default", help="The pruning algorithm that the network will train with. Default is none. Available are: spp, entropic, threshold. ")
 parser.add_argument("--network_type", type=remove_space, default="seq2point", help="The seq2point architecture to use. ")
