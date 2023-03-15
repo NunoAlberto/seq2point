@@ -3,6 +3,9 @@ import os
 
 tf.random.set_seed(42)
 
+import os
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
 def create_model(input_window_length):
 
     """Specifies the structure of a seq2point model using Keras' functional API.

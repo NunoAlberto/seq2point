@@ -3,8 +3,10 @@ from remove_space import remove_space
 from seq2point_train import Trainer
 # Allows a model to be trained from the terminal.
 
-training_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddMicrowave/microwave_training_.csv"
-validation_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddMicrowave/microwave_validation_.csv"
+#training_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddMicrowave/microwave_training_.csv"
+#validation_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddMicrowave/microwave_validation_.csv"
+training_directory="C:/Users/gz20955/Desktop/seq2point/reddMicrowave/microwave_training_.csv"
+validation_directory="C:/Users/gz20955/Desktop/seq2point/reddMicrowave/microwave_validation_.csv"
 
 parser = argparse.ArgumentParser(description="Train sequence-to-point learning for energy disaggregation. ")
 

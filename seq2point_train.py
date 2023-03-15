@@ -5,6 +5,10 @@ import matplotlib.pyplot as plt
 from data_feeder import TrainSlidingWindowGenerator
 from model_structure import create_model, save_model
 #tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+
+import os
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
 class Trainer():
 
     """ Used to train a seq2point model with or without pruning applied Supports 
@@ -94,8 +98,8 @@ class Trainer():
 
         # Calculate the optimum steps per epoch.
         # self.__training_chunker.check_if_chunking()
-        steps_per_training_epoch = np.round(int(self.__training_chunker.total_size / self.__batch_size), decimals=0)
-        #steps_per_training_epoch = np.round(int(self.__training_chunker.total_num_samples / self.__batch_size), decimals=0)
+        #steps_per_training_epoch = np.round(int(self.__training_chunker.total_size / self.__batch_size), decimals=0)
+        steps_per_training_epoch = np.round(int(self.__training_chunker.total_num_samples / self.__batch_size), decimals=0)
 
         print("steps_per_training_epoch: " + str(steps_per_training_epoch))
         
@@ -157,8 +161,8 @@ class Trainer():
         #     callbacks=[early_stopping])
         ############################################################
 
-        self.__validation_steps = np.round(int(self.__validation_chunker.total_size / self.__batch_size), decimals=0)
-        #self.__validation_steps = np.round(int(self.__validation_chunker.total_num_samples / self.__batch_size), decimals=0)
+        #self.__validation_steps = np.round(int(self.__validation_chunker.total_size / self.__batch_size), decimals=0)
+        self.__validation_steps = np.round(int(self.__validation_chunker.total_num_samples / self.__batch_size), decimals=0)
         print("__batch_size: " + str(self.__batch_size))
         print("total_num_samples: " + str(self.__validation_chunker.total_num_samples))
         print("__validation_steps: " + str(self.__validation_steps))

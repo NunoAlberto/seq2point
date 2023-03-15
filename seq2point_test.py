@@ -1,3 +1,4 @@
+import math
 import os
 import logging
 import numpy as np 
@@ -9,6 +10,9 @@ from model_structure import create_model, load_model
 from data_feeder import TestSlidingWindowGenerator
 from appliance_data import appliance_data, mains_data
 import matplotlib.pyplot as plt
+
+import os
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 class Tester():
 
@@ -40,7 +44,7 @@ class Tester():
         self.__window_offset = int(0.5 * self.__window_size - 1)
         self.__number_of_windows = 100
         #self.__number_of_windows = 800
-        #self.__number_of_windows = 100
+        #self.__number_of_windows = -1
         #self.__number_of_windows = 129
         #self.__number_of_windows = 550
         #self.__number_of_windows = 80
@@ -75,12 +79,15 @@ class Tester():
         test_generator = TestSlidingWindowGenerator(number_of_windows=self.__number_of_windows, inputs=test_input, targets=test_target, offset=self.__window_offset)
 
         # Calculate the optimum steps per epoch.
-        steps_per_test_epoch = np.round(int(test_generator.total_size / self.__batch_size), decimals=0)
-        print("steps_per_test_epoch: " + str(steps_per_test_epoch))
+        steps_per_test_epoch = np.round(int(test_generator.total_size / self.__number_of_windows), decimals=0)
+        #steps_per_test_epoch = np.round(int(test_generator.total_num_samples / self.__batch_size), decimals=0)
+        print("steps_per_test_epoch old: " + str(steps_per_test_epoch))
+        print("steps_per_test_epoch new: " + str(test_generator.max_number_of_windows/self.__number_of_windows))
 
         # Test the model.
         start_time = time.time()
-        testing_history = model.predict(x=test_generator.load_dataset(), steps=steps_per_test_epoch, verbose=2)
+        #testing_history = model.predict(x=test_generator.load_dataset(), steps=steps_per_test_epoch, verbose=2)
+        testing_history = model.predict(x=test_generator.load_dataset(), steps=math.floor(test_generator.max_number_of_windows/self.__number_of_windows)-1, verbose=2)
 
         end_time = time.time()
         test_time = end_time - start_time
@@ -197,8 +204,8 @@ class Tester():
 
         """
 
-        comparable_metric_string = "Model values - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target))
-        logging.info(comparable_metric_string)
+        """comparable_metric_string = "Model values - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target))
+        logging.info(comparable_metric_string)"""
 
         testing_history = ((testing_history * appliance_data[self.__appliance]["std"]) + appliance_data[self.__appliance]["mean"])
         test_target = ((test_target * appliance_data[self.__appliance]["std"]) + appliance_data[self.__appliance]["mean"])
@@ -210,14 +217,23 @@ class Tester():
         testing_history[testing_history < 0] = 0
         test_input[test_input < 0] = 0
 
-        comparable_metric_string = "Real values - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target))
-        logging.info(comparable_metric_string)
+        """comparable_metric_string = "Real values - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target))
+        logging.info(comparable_metric_string)"""
 
         # Plot testing outcomes against ground truth.
-        plt.figure(1)
+        """plt.figure(1)
         plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
         plt.plot(test_target[self.__window_offset: -self.__window_offset], label="Ground Truth")
         plt.plot(testing_history, label="Predicted")
+        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
+        plt.ylabel("Power Value (Watts)")
+        plt.xlabel("Testing Window")
+        plt.legend()"""
+
+        plt.figure(1)
+        plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
+        plt.plot(test_target[:test_agg.size - (2 * self.__window_offset)], label="Ground Truth")
+        plt.plot(testing_history[:test_agg.size - (2 * self.__window_offset)], label="Predicted")
         plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
         plt.ylabel("Power Value (Watts)")
         plt.xlabel("Testing Window")

@@ -5,7 +5,8 @@ from seq2point_test import Tester
 # Allows a model to be tested from the terminal.
 
 # You need to input your test data directory
-test_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddMicrowave/microwave_test_.csv"
+#test_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddMicrowave/microwave_test_.csv"
+test_directory="C:/Users/gz20955/Desktop/seq2point/reddMicrowave/microwave_test_.csv"
 
 parser = argparse.ArgumentParser(description="Train a pruned neural network for energy disaggregation. ")
 
