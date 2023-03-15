@@ -18,15 +18,24 @@ def create_model(input_window_length):
     # filters = 16,32,64
     # kernel_size = 4,8,16
     # decrease/increase number of filters and sizes?
-    conv_layer_1 = tf.keras.layers.Convolution1D(filters=32, kernel_size=10, strides=1, padding="same", activation="relu")(reshape_layer_1)
-    #max_pool_1 = tf.keras.layers.MaxPooling1D(pool_size=2, strides=2, padding='valid')(conv_layer_1)
-    conv_layer_2 = tf.keras.layers.Convolution1D(filters=48, kernel_size=8, strides=1, padding="same", activation="relu")(conv_layer_1)
-    max_pool_2 = tf.keras.layers.MaxPooling1D(pool_size=2, strides=2, padding='valid')(conv_layer_2)
-    conv_layer_3 = tf.keras.layers.Convolution1D(filters=64, kernel_size=6, strides=1, padding="same", activation="relu")(max_pool_2)
-    #max_pool_3 = tf.keras.layers.MaxPooling1D(pool_size=2, strides=2, padding='valid')(conv_layer_3)
-    conv_layer_4 = tf.keras.layers.Convolution1D(filters=80, kernel_size=4, strides=1, padding="same", activation="relu")(conv_layer_3)
-    max_pool_4 = tf.keras.layers.MaxPooling1D(pool_size=2, strides=2, padding='valid')(conv_layer_4)
-    conv_layer_5 = tf.keras.layers.Convolution1D(filters=96, kernel_size=4, strides=1, padding="same", activation="relu")(max_pool_4)
+    conv_layer_1 = tf.keras.layers.Convolution1D(filters=32, kernel_size=7, strides=1, padding="same")(reshape_layer_1)
+    normalization_1 = tf.keras.layers.BatchNormalization()(conv_layer_1)
+    activation_1 = tf.keras.layers.Activation('relu')(normalization_1)
+    max_pool_1 = tf.keras.layers.MaxPooling1D(pool_size=2, strides=2, padding='valid')(activation_1)
+
+    conv_layer_2 = tf.keras.layers.Convolution1D(filters=64, kernel_size=5, strides=1, padding="same")(max_pool_1)
+    normalization_2 = tf.keras.layers.BatchNormalization()(conv_layer_2)
+    activation_2 = tf.keras.layers.Activation('relu')(normalization_2)
+    max_pool_2 = tf.keras.layers.MaxPooling1D(pool_size=2, strides=2, padding='valid')(activation_2)
+
+    conv_layer_3 = tf.keras.layers.Convolution1D(filters=128, kernel_size=3, strides=1, padding="same")(max_pool_2)
+    normalization_3 = tf.keras.layers.BatchNormalization()(conv_layer_3)
+    activation_3 = tf.keras.layers.Activation('relu')(normalization_3)
+    max_pool_3 = tf.keras.layers.MaxPooling1D(pool_size=2, strides=2, padding='valid')(activation_3)
+
+    #conv_layer_4 = tf.keras.layers.Convolution1D(filters=64, kernel_size=3, strides=1, padding="same", activation="relu")(conv_layer_3)
+    #max_pool_4 = tf.keras.layers.MaxPooling1D(pool_size=2, strides=2, padding='valid')(conv_layer_4)
+    #conv_layer_5 = tf.keras.layers.Convolution1D(filters=96, kernel_size=4, strides=1, padding="same", activation="relu")(conv_layer_4)
     #max_pool_5 = tf.keras.layers.MaxPooling1D(pool_size=2, strides=2, padding='valid')(conv_layer_5)
 
     # reshape_layer_2 = tf.keras.layers.Reshape((input_window_length, 50))(conv_layer_5)
@@ -35,17 +44,22 @@ def create_model(input_window_length):
     """biDirectionalLstm_1 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32, activation="tanh", return_sequences=True, dropout=0.5, recurrent_dropout=0.5), merge_mode="concat")(max_pool_5)
     biDirectionalLstm_2 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64, activation="tanh", return_sequences=True, dropout=0.5, recurrent_dropout=0.5), merge_mode="concat")(biDirectionalLstm_1)"""
 
-    biDirectionalLstm_1 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64, activation="tanh", return_sequences=True), merge_mode="concat")(conv_layer_5)
-    biDirectionalLstm_2 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128, activation="tanh", return_sequences=True), merge_mode="concat")(biDirectionalLstm_1)
+    biDirectionalLstm_1 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128, activation="tanh", return_sequences=False), merge_mode="concat")(max_pool_3)
+    #biDirectionalLstm_2 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128, activation="tanh", return_sequences=True), merge_mode="concat")(biDirectionalLstm_1)
+    flatten_layer = tf.keras.layers.Flatten()(biDirectionalLstm_1)
 
-    flatten_layer = tf.keras.layers.Flatten()(biDirectionalLstm_2)
-    """dropout_layer_1 = tf.keras.layers.Dropout(rate=0.5)(flatten_layer)"""
     # decrease/increase number of units?
-    label_layer = tf.keras.layers.Dense(256, activation="relu")(flatten_layer)
-    """dropout_layer = tf.keras.layers.Dropout(rate=0.5)(label_layer)"""
-    """label_layer_2 = tf.keras.layers.Dense(256, activation="relu")(dropout_layer)
-    dropout_layer_3 = tf.keras.layers.Dropout(rate=0.5)(label_layer_2)"""
-    output_layer = tf.keras.layers.Dense(1, activation="linear")(label_layer)
+    label_layer_1 = tf.keras.layers.Dense(128)(flatten_layer)
+    normalization_5 = tf.keras.layers.BatchNormalization()(label_layer_1)
+    activation_5 = tf.keras.layers.Activation('relu')(normalization_5)
+    dropout_layer_2 = tf.keras.layers.Dropout(rate=0.5)(activation_5)
+
+    """label_layer_2 = tf.keras.layers.Dense(128)(dropout_layer_2)
+    normalization_6 = tf.keras.layers.BatchNormalization()(label_layer_2)
+    activation_6 = tf.keras.layers.Activation('relu')(normalization_6)
+    dropout_layer_3 = tf.keras.layers.Dropout(rate=0.5)(activation_6)"""
+
+    output_layer = tf.keras.layers.Dense(1, activation="linear")(dropout_layer_2)
 
     model = tf.keras.Model(inputs=input_layer, outputs=output_layer)
     return model

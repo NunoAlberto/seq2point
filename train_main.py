@@ -10,8 +10,10 @@ parser = argparse.ArgumentParser(description="Train sequence-to-point learning f
 
 parser.add_argument("--appliance_name", type=remove_space, default="kettle", help="The name of the appliance to train the network with. Default is kettle. Available are: kettle, fridge, washing machine, dishwasher, and microwave. ")
 parser.add_argument("--batch_size", type=int, default="1000", help="The batch size to use when training the network. Default is 1000. ")
-# full microwave data - 1571848 crop
-parser.add_argument("--crop", type=int, default="10000", help="The number of rows of the dataset to take training data from. Default is 10000. ")
+# full microwave training set: 1907247 rows (terminal wc -l)
+parser.add_argument("--cropTrainingData", type=int, default="10000", help="The number of rows of the dataset to take training data from. Default is 10000. ")
+# full microwave validation set - 211914 rows (terminal wc -l)
+parser.add_argument("--cropValidationData", type=int, default="10000", help="The number of rows of the dataset to take training data from. Default is 10000. ")
 #parser.add_argument("--pruning_algorithm", type=remove_space, default="default", help="The pruning algorithm that the network will train with. Default is none. Available are: spp, entropic, threshold. ")
 parser.add_argument("--network_type", type=remove_space, default="seq2point", help="The seq2point architecture to use. ")
 #should probably change to 100 due to how early stopping works
@@ -26,7 +28,7 @@ arguments = parser.parse_args()
 # Need to provide the trained model
 save_model_dir = "saved_models/" + arguments.appliance_name + "_" + arguments.network_type + "_model.h5"
 
-trainer = Trainer(arguments.appliance_name, arguments.batch_size, arguments.crop, arguments.network_type,
+trainer = Trainer(arguments.appliance_name, arguments.batch_size, arguments.cropTrainingData, arguments.cropValidationData, arguments.network_type,
                   arguments.training_directory, arguments.validation_directory,
                   save_model_dir,
                   epochs = arguments.epochs, input_window_length = arguments.input_window_length,

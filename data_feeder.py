@@ -30,10 +30,10 @@ class TrainSlidingWindowGenerator():
                 batch_size=1000, 
                 crop=100000, 
                 skip_rows=0, 
-                ram_threshold=5 * 10 ** 5):
+                ram_threshold=5 * 10 ** 8):
         self.__file_name = file_name
         self.__batch_size = batch_size
-        self.__chunk_size = 10 ** 8
+        self.__chunk_size = 10 ** 6
         self.__shuffle = shuffle
         self.__offset = offset
         self.__crop = crop

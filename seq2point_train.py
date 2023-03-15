@@ -27,14 +27,15 @@ class Trainer():
     
     """
 
-    def __init__(self, appliance, batch_size, crop, network_type, 
+    def __init__(self, appliance, batch_size, trainingCrop, validationCrop, network_type, 
                  training_directory, validation_directory, save_model_dir,
                  epochs=100, input_window_length=599, validation_frequency = 1,
                  patience=3, min_delta=1e-6, verbose=1):
         self.__appliance = appliance
         self.__algorithm = network_type
         self.__network_type = network_type
-        self.__crop = crop
+        self.__trainingCrop = trainingCrop
+        self.__validationCrop = validationCrop
         self.__batch_size = batch_size
         self.__epochs = epochs
         self.__patience = patience
@@ -73,14 +74,14 @@ class Trainer():
         self.__training_chunker = TrainSlidingWindowGenerator(file_name=self.__training_directory, 
                                         chunk_size=self.__max_chunk_size, 
                                         batch_size=self.__batch_size, 
-                                        crop=self.__crop, shuffle=True,
+                                        crop=self.__trainingCrop, shuffle=True,
                                         skip_rows=self.__skip_rows_train, 
                                         offset=self.__window_offset, 
                                         ram_threshold=self.__ram_threshold)
         self.__validation_chunker = TrainSlidingWindowGenerator(file_name=self.__validation_directory, 
                                             chunk_size=self.__max_chunk_size, 
                                             batch_size=self.__batch_size, 
-                                            crop=self.__crop, 
+                                            crop=self.__validationCrop, 
                                             shuffle=True,
                                             skip_rows=self.__skip_rows_val, 
                                             offset=self.__window_offset, 
@@ -93,8 +94,8 @@ class Trainer():
 
         # Calculate the optimum steps per epoch.
         # self.__training_chunker.check_if_chunking()
-        #steps_per_training_epoch = np.round(int(self.__training_chunker.total_size / self.__batch_size), decimals=0)
-        steps_per_training_epoch = np.round(int(self.__training_chunker.total_num_samples / self.__batch_size), decimals=0)
+        steps_per_training_epoch = np.round(int(self.__training_chunker.total_size / self.__batch_size), decimals=0)
+        #steps_per_training_epoch = np.round(int(self.__training_chunker.total_num_samples / self.__batch_size), decimals=0)
 
         print("steps_per_training_epoch: " + str(steps_per_training_epoch))
         
@@ -156,7 +157,8 @@ class Trainer():
         #     callbacks=[early_stopping])
         ############################################################
 
-        self.__validation_steps = np.round(int(self.__validation_chunker.total_num_samples / self.__batch_size), decimals=0)
+        self.__validation_steps = np.round(int(self.__validation_chunker.total_size / self.__batch_size), decimals=0)
+        #self.__validation_steps = np.round(int(self.__validation_chunker.total_num_samples / self.__batch_size), decimals=0)
         print("__batch_size: " + str(self.__batch_size))
         print("total_num_samples: " + str(self.__validation_chunker.total_num_samples))
         print("__validation_steps: " + str(self.__validation_steps))

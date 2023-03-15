@@ -38,7 +38,8 @@ class Tester():
         self._input_window_length = input_window_length
         self.__window_size = self._input_window_length + 2
         self.__window_offset = int(0.5 * self.__window_size - 1)
-        self.__number_of_windows = 800
+        self.__number_of_windows = 100
+        #self.__number_of_windows = 800
         #self.__number_of_windows = 100
         #self.__number_of_windows = 129
         #self.__number_of_windows = 550
@@ -75,6 +76,7 @@ class Tester():
 
         # Calculate the optimum steps per epoch.
         steps_per_test_epoch = np.round(int(test_generator.total_size / self.__batch_size), decimals=0)
+        print("steps_per_test_epoch: " + str(steps_per_test_epoch))
 
         # Test the model.
         start_time = time.time()
@@ -125,7 +127,8 @@ class Tester():
         metric_string = "MSE: ", str(evaluation_metrics[0]), " MAE: ", str(evaluation_metrics[3])
         logging.info(metric_string)
 
-        self.count_pruned_weights(model)  
+        #commented out
+        #self.count_pruned_weights(model)  
 
     def count_pruned_weights(self, model):
 
@@ -200,7 +203,7 @@ class Tester():
         testing_history = ((testing_history * appliance_data[self.__appliance]["std"]) + appliance_data[self.__appliance]["mean"])
         test_target = ((test_target * appliance_data[self.__appliance]["std"]) + appliance_data[self.__appliance]["mean"])
         test_agg = (test_input.flatten() * mains_data["std"]) + mains_data["mean"]
-        test_agg = test_agg[:testing_history.size]
+        #test_agg = test_agg[:testing_history.size]
 
         # Can't have negative energy readings - set any results below 0 to 0.
         test_target[test_target < 0] = 0
@@ -213,8 +216,8 @@ class Tester():
         # Plot testing outcomes against ground truth.
         plt.figure(1)
         plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
-        plt.plot(test_target[:test_agg.size - (2 * self.__window_offset)], label="Ground Truth")
-        plt.plot(testing_history[:test_agg.size - (2 * self.__window_offset)], label="Predicted")
+        plt.plot(test_target[self.__window_offset: -self.__window_offset], label="Ground Truth")
+        plt.plot(testing_history, label="Predicted")
         plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
         plt.ylabel("Power Value (Watts)")
         plt.xlabel("Testing Window")
