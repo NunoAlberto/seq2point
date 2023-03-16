@@ -7,7 +7,7 @@ import os
 
 
 DATA_DIRECTORY = '../redd-original/'
-SAVE_PATH = './reddWashingMachine/'
+SAVE_PATH = './microwaveData/'
 AGG_MEAN = 522
 AGG_STD = 814
 def get_arguments():
@@ -15,7 +15,7 @@ def get_arguments():
                                      example for NILM')
     parser.add_argument('--data_dir', type=str, default=DATA_DIRECTORY,
                           help='The directory containing the REDD data')
-    parser.add_argument('--appliance_name', type=str, default='washingmachine',
+    parser.add_argument('--appliance_name', type=str, default='microwave',
                           help='which appliance you want to train: kettle,\
                           microwave,fridge,dishwasher,washingmachine')
     parser.add_argument('--aggregate_mean',type=int,default=AGG_MEAN,
@@ -36,7 +36,7 @@ print(appliance_name)
 def main():
 
     sample_seconds = 8
-    validation_percent = 10
+    validation_percent = 20
     nrows = None
     debug = False
 
