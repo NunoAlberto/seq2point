@@ -79,20 +79,19 @@ class Tester():
         test_generator = TestSlidingWindowGenerator(number_of_windows=self.__number_of_windows, inputs=test_input, targets=test_target, offset=self.__window_offset)
 
         # Calculate the optimum steps per epoch.
-        #steps_per_test_epoch = np.round(int(test_generator.total_size / self.__number_of_windows), decimals=0)
-        steps_per_test_epoch = np.round(int(test_generator.total_size / self.__batch_size), decimals=0)
-        print("steps_per_test_epoch old: " + str(steps_per_test_epoch))
-        print("steps_per_test_epoch new: " + str(math.floor(test_generator.max_number_of_windows/self.__number_of_windows)-1))
+        steps_per_test_epoch = np.round(math.floor(test_generator.max_number_of_windows / self.__number_of_windows)-math.floor(self._input_window_length/self.__number_of_windows), decimals=0)
+        #1827 for fridge
+        #steps_per_test_epoch = np.round(int(test_generator.total_size / self.__batch_size), decimals=0)
+        print("steps_per_test_epoch: " + str(steps_per_test_epoch))
 
         # Test the model.
         start_time = time.time()
-        #testing_history = model.predict(x=test_generator.load_dataset(), steps=steps_per_test_epoch, verbose=2)
-        testing_history = model.predict(x=test_generator.load_dataset(), steps=10, verbose=2)
+        testing_history = model.predict(x=test_generator.load_dataset(), steps=1827, verbose=2)
 
         end_time = time.time()
         test_time = end_time - start_time
 
-        evaluation_metrics = model.evaluate(x=test_generator.load_dataset(), steps=10)
+        evaluation_metrics = model.evaluate(x=test_generator.load_dataset(), steps=1827)
 
         self.log_results(model, test_time, evaluation_metrics)
         self.plot_results(testing_history, test_input, test_target)
@@ -135,7 +134,7 @@ class Tester():
         logging.info(metric_string)
 
         #commented out
-        #self.count_pruned_weights(model)  
+        self.count_pruned_weights(model)  
 
     def count_pruned_weights(self, model):
 
@@ -204,8 +203,8 @@ class Tester():
 
         """
 
-        """comparable_metric_string = "Model values - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target))
-        logging.info(comparable_metric_string)"""
+        #comparable_metric_string = "Own defined metrics (before post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target))
+        #logging.info(comparable_metric_string)
 
         testing_history = ((testing_history * appliance_data[self.__appliance]["std"]) + appliance_data[self.__appliance]["mean"])
         test_target = ((test_target * appliance_data[self.__appliance]["std"]) + appliance_data[self.__appliance]["mean"])
@@ -217,8 +216,8 @@ class Tester():
         testing_history[testing_history < 0] = 0
         test_input[test_input < 0] = 0
 
-        """comparable_metric_string = "Real values - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target))
-        logging.info(comparable_metric_string)"""
+        #comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target))
+        #logging.info(comparable_metric_string)
 
         # Plot testing outcomes against ground truth.
         """plt.figure(1)

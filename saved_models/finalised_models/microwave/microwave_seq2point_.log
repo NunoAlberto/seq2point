@@ -1,0 +1,31 @@
+WARNING:tensorflow:From C:\Users\gz20955\.conda\envs\nilm-env\lib\site-packages\tensorflow\python\ops\init_ops.py:1251: calling VarianceScaling.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING:tensorflow:From C:\Users\gz20955\.conda\envs\nilm-env\lib\site-packages\tensorflow\python\ops\init_ops.py:97: calling GlorotUniform.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING:tensorflow:From C:\Users\gz20955\.conda\envs\nilm-env\lib\site-packages\tensorflow\python\ops\init_ops.py:97: calling Orthogonal.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING:tensorflow:From C:\Users\gz20955\.conda\envs\nilm-env\lib\site-packages\tensorflow\python\ops\init_ops.py:97: calling Zeros.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING:tensorflow:From C:\Users\gz20955\.conda\envs\nilm-env\lib\site-packages\tensorflow\python\ops\init_ops.py:97: calling Ones.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING:tensorflow:From C:\Users\gz20955\.conda\envs\nilm-env\lib\site-packages\tensorflow\python\ops\math_grad.py:1250: add_dispatch_support.<locals>.wrapper (from tensorflow.python.ops.array_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.where in 2.0, which has the same broadcast rule as np.where
+INFO:root:Inference Time: 17.780989170074463
+INFO:root:('MSE: ', '0.03219267720221955', ' MAE: ', '0.023750303')
+INFO:root:CONV. ZEROS: 0
+INFO:root:CONV. WEIGHTS: 35040
+INFO:root:CONV. RATIO: 0.0
+INFO:root:
+INFO:root:DENSE ZEROS: 0
+INFO:root:DENSE WEIGHTS: 98784
+INFO:root:DENSE RATIO: 0.0
+INFO:root:
+INFO:root:TOTAL ZEROS: 35040
+INFO:root:TOTAL WEIGHTS: 332865
+INFO:root:TOTAL RATIO: 0.10526790140146906

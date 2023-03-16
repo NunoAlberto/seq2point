@@ -6,6 +6,9 @@ from seq2point_train import Trainer
 #python train_main.py --appliance_name microwave --input_window_length 129 --cropTrainingData 1907247 --cropValidationData 211914 --epochs 100 --batch_size 64
 #python train_main.py --appliance_name fridge --input_window_length 497 --cropTrainingData 921148 --cropValidationData 102348 --epochs 100 --batch_size 64
 
+#python train_main.py --appliance_name microwave --input_window_length 129 --cropTrainingData 308948 --cropValidationData 77236 --epochs 100 --batch_size 32 --training_directory microwaveData/microwave_training_.csv --validation_directory microwaveData/microwave_validation_.csv
+#python train_main.py --appliance_name fridge --input_window_length 497 --cropTrainingData 420215 --cropValidationData 105053 --epochs 100 --batch_size 32 --training_directory fridgeData/fridge_training_.csv --validation_directory fridgeData/fridge_validation_.csv
+
 #training_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddFridge/fridge_training_.csv"
 #validation_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddFridge/fridge_validation_.csv"
 training_directory="C:/Users/gz20955/Desktop/seq2point/reddFridge/fridge_training_.csv"
@@ -15,11 +18,15 @@ parser = argparse.ArgumentParser(description="Train sequence-to-point learning f
 
 parser.add_argument("--appliance_name", type=remove_space, default="kettle", help="The name of the appliance to train the network with. Default is kettle. Available are: kettle, fridge, washing machine, dishwasher, and microwave. ")
 parser.add_argument("--batch_size", type=int, default="1000", help="The batch size to use when training the network. Default is 1000. ")
-# full microwave training set: 1907247 rows (terminal wc -l)
-# full fridge training set: 921148 rows (terminal wc -l)
+# full microwave training set: 308948 rows (terminal wc -l)
+# full fridge training set: 420215 rows (terminal wc -l)
+# full dishwasher training set: 583571 rows (terminal wc -l)
+# full washingMachine training set: 583571 rows (terminal wc -l)
 parser.add_argument("--cropTrainingData", type=int, default="10000", help="The number of rows of the dataset to take training data from. Default is 10000. ")
-# full microwave validation set - 211914 rows (terminal wc -l)
-# full fridge validation set - 102348 rows (terminal wc -l)
+# full microwave validation set - 77236 rows (terminal wc -l)
+# full fridge validation set - 105053 rows (terminal wc -l)
+# full dishwasher validation set: 145892 rows (terminal wc -l)
+# full washingMachine validation set: 145892 rows (terminal wc -l)
 parser.add_argument("--cropValidationData", type=int, default="10000", help="The number of rows of the dataset to take training data from. Default is 10000. ")
 #parser.add_argument("--pruning_algorithm", type=remove_space, default="default", help="The pruning algorithm that the network will train with. Default is none. Available are: spp, entropic, threshold. ")
 parser.add_argument("--network_type", type=remove_space, default="seq2point", help="The seq2point architecture to use. ")

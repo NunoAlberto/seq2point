@@ -1,8 +1,6 @@
 import tensorflow as tf 
 import os
 
-tf.random.set_seed(42)
-
 import os
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
