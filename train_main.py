@@ -3,10 +3,13 @@ from remove_space import remove_space
 from seq2point_train import Trainer
 # Allows a model to be trained from the terminal.
 
-training_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddFridge/fridge_training_.csv"
-validation_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddFridge/fridge_validation_.csv"
-#training_directory="C:/Users/gz20955/Desktop/seq2point/reddMicrowave/microwave_training_.csv"
-#validation_directory="C:/Users/gz20955/Desktop/seq2point/reddMicrowave/microwave_validation_.csv"
+#python train_main.py --appliance_name microwave --input_window_length 129 --cropTrainingData 1907247 --cropValidationData 211914 --epochs 100 --batch_size 64
+#python train_main.py --appliance_name fridge --input_window_length 497 --cropTrainingData 921148 --cropValidationData 102348 --epochs 100 --batch_size 64
+
+#training_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddFridge/fridge_training_.csv"
+#validation_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddFridge/fridge_validation_.csv"
+training_directory="C:/Users/gz20955/Desktop/seq2point/reddFridge/fridge_training_.csv"
+validation_directory="C:/Users/gz20955/Desktop/seq2point/reddFridge/fridge_validation_.csv"
 
 parser = argparse.ArgumentParser(description="Train sequence-to-point learning for energy disaggregation. ")
 
