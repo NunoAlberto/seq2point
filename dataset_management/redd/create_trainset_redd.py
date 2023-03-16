@@ -7,7 +7,7 @@ import os
 
 
 DATA_DIRECTORY = '../redd-original/'
-SAVE_PATH = './reddFridge/'
+SAVE_PATH = './reddWashingMachine/'
 AGG_MEAN = 522
 AGG_STD = 814
 def get_arguments():
@@ -15,7 +15,7 @@ def get_arguments():
                                      example for NILM')
     parser.add_argument('--data_dir', type=str, default=DATA_DIRECTORY,
                           help='The directory containing the REDD data')
-    parser.add_argument('--appliance_name', type=str, default='fridge',
+    parser.add_argument('--appliance_name', type=str, default='washingmachine',
                           help='which appliance you want to train: kettle,\
                           microwave,fridge,dishwasher,washingmachine')
     parser.add_argument('--aggregate_mean',type=int,default=AGG_MEAN,
@@ -68,18 +68,55 @@ def main():
                                       names=['time', 'mains2'],
                                       dtype={'time': str},
                                       )
-        app_df = pd.read_table(args.data_dir + '/' + 'house_' + str(h) + '/' + 'channel_' +
-                                   str(params_appliance[appliance_name]['channels']
-                                       [params_appliance[appliance_name]['houses'].index(h)]) + '.dat',
-                                   sep="\s+",
-                                   nrows=nrows,
-                                   usecols=[0, 1],
-                                   names=['time', appliance_name],
-                                   dtype={'time': str},
-                                   )
+        
+        try:
+            length = len(params_appliance[appliance_name]['channels'][params_appliance[appliance_name]['houses'].index(h)])
+            isList = True
+            print("House has multiple channels for the target appliance")
+        except:
+            isList = False
+            print("House only has one channel for the target appliance")
 
+        if (isList):
+            app_df_list = []
+            print(params_appliance[appliance_name]['channels'][params_appliance[appliance_name]['houses'].index(h)])
+            for i in params_appliance[appliance_name]['channels'][params_appliance[appliance_name]['houses'].index(h)]:
+                print(i)
+                app_df_channel = pd.read_table(args.data_dir + '/' + 'house_' + str(h) + '/' + 'channel_' +
+                                    str(i) + '.dat',
+                                    sep="\s+",
+                                    nrows=nrows,
+                                    usecols=[0, 1],
+                                    names=['time', appliance_name+str(i)],
+                                    dtype={'time': str},
+                                    )
+                
+                app_df_channel['time'] = pd.to_datetime(app_df_channel['time'], unit='s')
+                app_df_channel.set_index('time', inplace=True)
+                app_df_list.append(app_df_channel)
+            
+            app_df = app_df_list[0]
+            for index in range(1, len(app_df_list)):
+                app_df = app_df.join(app_df_list[index], how='outer')
 
+            app_df[appliance_name] = app_df.iloc[:].sum(axis=1)
+            app_df.reset_index(inplace=True)
 
+            for i in params_appliance[appliance_name]['channels'][params_appliance[appliance_name]['houses'].index(h)]:
+                del app_df[appliance_name+str(i)]
+
+        else:
+            app_df = pd.read_table(args.data_dir + '/' + 'house_' + str(h) + '/' + 'channel_' +
+                                    str(params_appliance[appliance_name]['channels']
+                                        [params_appliance[appliance_name]['houses'].index(h)]) + '.dat',
+                                    sep="\s+",
+                                    nrows=nrows,
+                                    usecols=[0, 1],
+                                    names=['time', appliance_name],
+                                    dtype={'time': str},
+                                    )
+            
+            app_df['time'] = pd.to_datetime(app_df['time'], unit='s')
 
         mains1_df['time'] = pd.to_datetime(mains1_df['time'], unit='s')
         mains2_df['time'] = pd.to_datetime(mains2_df['time'], unit='s')
@@ -107,7 +144,7 @@ def main():
             # Appliance
             # app_df = app_df.set_index(app_df.columns[0])
             # app_df.index = pd.to_datetime(app_df.index, unit='s')
-        app_df['time'] = pd.to_datetime(app_df['time'], unit='s')
+        #app_df['time'] = pd.to_datetime(app_df['time'], unit='s')
             # app_df.columns = [appliance_name]
         if debug:
             print("app_df:")

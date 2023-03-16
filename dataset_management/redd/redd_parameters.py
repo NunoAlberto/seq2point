@@ -30,9 +30,9 @@ params_appliance = {
         'mean': 700,
         'std': 1000,
         's2s_length': 1536,
-        'houses': [1, 2, 3],
-        'channels': [6, 10, 9],
-        'train_build': [2, 3],
+        'houses': [1, 2, 3, 4, 6, 5],
+        'channels': [6, 10, 9, 15, 9, 20],
+        'train_build': [2, 3, 4, 5, 6],
         'test_build': 1
     },
     'washingmachine': {
@@ -42,9 +42,9 @@ params_appliance = {
         'mean': 400,
         'std': 700,
         's2s_length': 2000,
-        'houses': [1, 2, 3],
-        'channels': [19, 7, 13],
-        'train_build': [2, 3],
+        'houses': [1, 2, 3, 4, 6, 5],
+        'channels': [[10, 19, 20], 7, [13, 14], 7, 4, [8, 9]],
+        'train_build': [2, 3, 4, 5, 6],
         'test_build': 1
     }
 }
