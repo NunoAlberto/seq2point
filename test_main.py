@@ -6,15 +6,14 @@ from seq2point_test import Tester
 
 #python test_main.py --appliance_name microwave --input_window_length 129 --crop 183543 --batch_size 32 --test_directory microwaveData/microwave_test_.csv
 #python test_main.py --appliance_name fridge --input_window_length 497 --crop 183543 --batch_size 32 --test_directory fridgeData/fridge_test_.csv
-#python test_main.py --appliance_name dishwasher --input_window_length 1536 --crop 183543 --batch_size 32 --test_directory dishwasherData/dishwasher_test_.csv
+#python test_main.py --appliance_name dishwasher --input_window_length 1537 --crop 183543 --batch_size 32 --test_directory dishwasherData/dishwasher_test_.csv
+#python test_main.py --appliance_name washingmachine --input_window_length 2303 --crop 183543 --batch_size 32 --test_directory washingmachineData/washingmachine_test_.csv
 
-# You need to input your test data directory
-#test_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddMicrowave/microwave_test_.csv"
-test_directory="C:/Users/gz20955/Desktop/seq2point/reddFridge/fridge_test_.csv"
+test_directory="microwaveData/microwave_test_.csv"
 
 parser = argparse.ArgumentParser(description="Train a pruned neural network for energy disaggregation. ")
 
-parser.add_argument("--appliance_name", type=remove_space, default="kettle", help="The name of the appliance to perform disaggregation with. Default is kettle. Available are: kettle, fridge, dishwasher, microwave. ")
+parser.add_argument("--appliance_name", type=remove_space, default="microwave", help="The name of the appliance to perform disaggregation with. Default is kettle. Available are: kettle, fridge, dishwasher, microwave. ")
 parser.add_argument("--batch_size", type=int, default="1000", help="The batch size to use when training the network. Default is 1000. ")
 # full microwave testing set: 183543 rows (terminal wc -l)
 # full fridge testing set: 183543 rows (terminal wc -l)
