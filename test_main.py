@@ -6,6 +6,7 @@ from seq2point_test import Tester
 
 #python test_main.py --appliance_name microwave --input_window_length 129 --crop 183543 --batch_size 32 --test_directory microwaveData/microwave_test_.csv
 #python test_main.py --appliance_name fridge --input_window_length 497 --crop 183543 --batch_size 32 --test_directory fridgeData/fridge_test_.csv
+#python test_main.py --appliance_name dishwasher --input_window_length 1536 --crop 183543 --batch_size 32 --test_directory dishwasherData/dishwasher_test_.csv
 
 # You need to input your test data directory
 #test_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddMicrowave/microwave_test_.csv"

@@ -8,6 +8,8 @@ from seq2point_train import Trainer
 
 #python train_main.py --appliance_name microwave --input_window_length 129 --cropTrainingData 308948 --cropValidationData 77236 --epochs 100 --batch_size 32 --training_directory microwaveData/microwave_training_.csv --validation_directory microwaveData/microwave_validation_.csv
 #python train_main.py --appliance_name fridge --input_window_length 497 --cropTrainingData 420215 --cropValidationData 105053 --epochs 100 --batch_size 32 --training_directory fridgeData/fridge_training_.csv --validation_directory fridgeData/fridge_validation_.csv
+#python train_main.py --appliance_name dishwasher --input_window_length 1537 --cropTrainingData 583571 --cropValidationData 145892 --epochs 100 --batch_size 32 --training_directory dishwasherData/dishwasher_training_.csv --validation_directory dishwasherData/dishwasher_validation_.csv
+#python train_main.py --appliance_name washingmachine --input_window_length 2303 --cropTrainingData 583571 --cropValidationData 145892 --epochs 100 --batch_size 32 --training_directory washingmachineData/washingmachine_training_.csv --validation_directory washingmachineData/washingmachine_validation_.csv
 
 #training_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddFridge/fridge_training_.csv"
 #validation_directory="/Users/NunoAlberto/Desktop/Computer Science/3rd Year/tb2/Individual Project/seq2point/reddFridge/fridge_validation_.csv"

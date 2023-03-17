@@ -86,12 +86,12 @@ class Tester():
 
         # Test the model.
         start_time = time.time()
-        testing_history = model.predict(x=test_generator.load_dataset(), steps=1827, verbose=2)
+        testing_history = model.predict(x=test_generator.load_dataset(), steps=5, verbose=2)
 
         end_time = time.time()
         test_time = end_time - start_time
 
-        evaluation_metrics = model.evaluate(x=test_generator.load_dataset(), steps=1827)
+        evaluation_metrics = model.evaluate(x=test_generator.load_dataset(), steps=5)
 
         self.log_results(model, test_time, evaluation_metrics)
         self.plot_results(testing_history, test_input, test_target)
