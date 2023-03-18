@@ -34,7 +34,7 @@ class Trainer():
     def __init__(self, appliance, batch_size, trainingCrop, validationCrop, network_type, 
                  training_directory, validation_directory, save_model_dir,
                  epochs=100, input_window_length=599, validation_frequency = 1,
-                 patience=3, min_delta=1e-6, verbose=1):
+                 patience=5, min_delta=1e-6, verbose=1):
         self.__appliance = appliance
         self.__algorithm = network_type
         self.__network_type = network_type

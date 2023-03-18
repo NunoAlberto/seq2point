@@ -4,7 +4,12 @@ from seq2point_test import Tester
 
 # Allows a model to be tested from the terminal.
 
-#python test_main.py --appliance_name microwave --input_window_length 129 --crop 183543 --batch_size 32 --test_directory microwaveData/microwave_test_.csv
+#python test_main.py --appliance_name microwave --input_window_length 99 --crop 183543 --batch_size 128 --test_directory microwaveData/microwave_test_.csv
+#python test_main.py --appliance_name fridge --input_window_length 497 --crop 183543 --batch_size 32 --test_directory fridgeData/fridge_test_.csv
+#python test_main.py --appliance_name dishwasher --input_window_length 1537 --crop 183543 --batch_size 32 --test_directory dishwasherData/dishwasher_test_.csv
+#python test_main.py --appliance_name washingmachine --input_window_length 2303 --crop 183543 --batch_size 32 --test_directory washingmachineData/washingmachine_test_.csv
+
+#python test_main.py --appliance_name microwave --input_window_length 49 --crop 183543 --batch_size 64 --test_directory microwaveData/microwave_test_.csv
 #python test_main.py --appliance_name fridge --input_window_length 497 --crop 183543 --batch_size 32 --test_directory fridgeData/fridge_test_.csv
 #python test_main.py --appliance_name dishwasher --input_window_length 1537 --crop 183543 --batch_size 32 --test_directory dishwasherData/dishwasher_test_.csv
 #python test_main.py --appliance_name washingmachine --input_window_length 2303 --crop 183543 --batch_size 32 --test_directory washingmachineData/washingmachine_test_.csv
