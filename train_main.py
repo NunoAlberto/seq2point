@@ -9,8 +9,10 @@ from seq2point_train import Trainer
 #python train_main.py --appliance_name washingmachine --input_window_length 2303 --cropTrainingData 583571 --cropValidationData 145892 --epochs 100 --batch_size 32 --training_directory washingmachineData/washingmachine_training_.csv --validation_directory washingmachineData/washingmachine_validation_.csv
 
 # new window sizes
-#python train_main.py --appliance_name microwave --input_window_length 49 --cropTrainingData 308948 --cropValidationData 77236 --epochs 100 --batch_size 64 --training_directory microwaveData/microwave_training_.csv --validation_directory microwaveData/microwave_validation_.csv
-#python train_main.py --appliance_name fridge --input_window_length 529 --cropTrainingData 420215 --cropValidationData 105053 --epochs 100 --batch_size 32 --training_directory fridgeData/fridge_training_.csv --validation_directory fridgeData/fridge_validation_.csv
+# microwave signature -> 12 timesteps
+#python train_main.py --appliance_name microwave --input_window_length 21 --cropTrainingData 308948 --cropValidationData 77236 --epochs 100 --batch_size 64 --training_directory microwaveData/microwave_training_.csv --validation_directory microwaveData/microwave_validation_.csv
+# fridge signature -> 124 timesteps
+#python train_main.py --appliance_name fridge --input_window_length 133 --cropTrainingData 420215 --cropValidationData 105053 --epochs 100 --batch_size 64 --training_directory fridgeData/fridge_training_.csv --validation_directory fridgeData/fridge_validation_.csv
 #python train_main.py --appliance_name dishwasher --input_window_length 2369 --cropTrainingData 583571 --cropValidationData 145892 --epochs 100 --batch_size 32 --training_directory dishwasherData/dishwasher_training_.csv --validation_directory dishwasherData/dishwasher_validation_.csv
 #python train_main.py --appliance_name washingmachine --input_window_length 3649 --cropTrainingData 583571 --cropValidationData 145892 --epochs 100 --batch_size 32 --training_directory washingmachineData/washingmachine_training_.csv --validation_directory washingmachineData/washingmachine_validation_.csv
 
