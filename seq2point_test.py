@@ -109,21 +109,40 @@ class Tester():
         return SAE"""
 
     def mae(self, prediction, true):
-        MAE = abs(true - prediction)
+        """print(prediction.shape)
+        print(true.shape)"""
+        """MAE = abs(true - prediction)
+        #print("1: ", str(MAE))
         MAE = np.sum(MAE)
+        #print("2: ", str(MAE))
         MAE = MAE / len(prediction)
+        #print("3: ", str(MAE))"""
+
+        MAE = 0
+        for i in range(len(prediction)):
+            MAE += abs(true[i] - prediction[i])
+        MAE = MAE / len(prediction)
+        
         return MAE
 
 
     def sae(self, prediction, true, N):
+        """print(prediction.shape)
+        print(true.shape)"""
         T = len(prediction)
         K = int(T / N)
         SAE = 0
-        for k in range(1, N):
-            pred_r = np.sum(prediction[k * N: (k + 1) * N])
-            true_r = np.sum(true[k * N: (k + 1) * N])
-            SAE += abs(true_r - pred_r)
-        SAE = SAE / (K * N)
+        for k in range(0, N):
+            startIndex = k * K
+            lastIndex = (k + 1) * K
+            if lastIndex > T:
+                lastIndex = T
+            pred_r = np.sum(prediction[startIndex:lastIndex])
+            true_r = np.sum(true[startIndex:lastIndex])
+            SAE += abs(true_r - pred_r)/len(prediction[startIndex:lastIndex])
+        #print("1: ", str(SAE))
+        SAE = SAE / N
+        #print("2: ", str(SAE))
         return SAE
 
     def test_model(self):
@@ -274,8 +293,8 @@ class Tester():
         logging.info(comparable_metric_string)
         print("Here 1/2")"""
 
-        testing_history = ((testing_history * appliance_data[self.__appliance]["std"]) + appliance_data[self.__appliance]["mean"])
-        test_target = ((test_target * appliance_data[self.__appliance]["std"]) + appliance_data[self.__appliance]["mean"])
+        testing_history = ((testing_history.flatten() * appliance_data[self.__appliance]["std"]) + appliance_data[self.__appliance]["mean"])
+        test_target = ((test_target.flatten() * appliance_data[self.__appliance]["std"]) + appliance_data[self.__appliance]["mean"])
         test_agg = (test_input.flatten() * mains_data["std"]) + mains_data["mean"]
         #test_agg = test_agg[:testing_history.size]
 
@@ -286,6 +305,21 @@ class Tester():
         testing_history[testing_history < 0] = 0
         test_input[test_input < 0] = 0
 
+        """MAE = 0
+        SAE = 0
+        F1 = 0
+        for index in range(10):
+            subsequenceLength = int(len(testing_history)/10)
+            MAE_i = self.mae(testing_history[index * subsequenceLength:(index + 1) * subsequenceLength], test_target[index * subsequenceLength:(index + 1) * subsequenceLength])
+            SAE_i = self.sae(testing_history[index * subsequenceLength:(index + 1) * subsequenceLength], test_target[index * subsequenceLength:(index + 1) * subsequenceLength], 1200)
+            F1_i = self.f1(testing_history[index * subsequenceLength:(index + 1) * subsequenceLength], test_target[index * subsequenceLength:(index + 1) * subsequenceLength])
+
+            MAE += MAE_i
+            SAE += SAE_i
+            F1 += F1_i"""
+
+
+        #comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(MAE/10), " SAE: ", str(SAE/10), " F1: ", str(F1/10)
         comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 1200)), " F1: ", str(self.f1(testing_history, test_target))
         logging.info(comparable_metric_string)
         print("Own defined metrics logging done successfully!")
