@@ -55,15 +55,75 @@ class Tester():
         self.__log_file = log_file_dir
         logging.basicConfig(filename=self.__log_file,level=logging.INFO)
 
+    def f1(self, prediction, true):
+        # fridge -> 50 watts
+        THRESHOLD = 15
+
+        appliance_prediction_classification = np.copy(prediction)
+        appliance_prediction_classification[appliance_prediction_classification < THRESHOLD] = 0
+        appliance_prediction_classification[appliance_prediction_classification >= THRESHOLD] = 1
+
+        appliance_truth_classification = np.copy(true)
+        appliance_truth_classification[appliance_truth_classification < THRESHOLD] = 0
+        appliance_truth_classification[appliance_truth_classification >= THRESHOLD] = 1
+
+        epsilon = 1e-8
+        TP = epsilon
+        FN = epsilon
+        FP = epsilon
+        TN = epsilon
+        for i in range(len(prediction)):
+            prediction_binary = appliance_prediction_classification[i]
+            truth_binary = appliance_truth_classification[i]
+            if prediction_binary == 1 and truth_binary == 1:
+                TP += 1
+            elif prediction_binary == 0 and truth_binary == 1:
+                FN += 1
+            elif prediction_binary == 1 and truth_binary == 0:
+                FP += 1
+            elif prediction_binary == 0 and truth_binary == 0:
+                TN += 1
+        R = TP / (TP + FN)
+        P = TP / (TP + FP)
+        f1 = (2 * P * R) / (P + R)
+        return f1
+
+    """def mae(self, prediction, true):
+        #print("Starting MAE")
+        print(prediction.shape, true.shape)
+        MAE = abs(true - prediction)
+        #print("MAE 1 = ", str(MAE))
+        MAE = np.sum(MAE)
+        #print("MAE 2 = ", str(MAE))
+        MAE = MAE / len(prediction)
+        #print("MAE 3 = ", str(MAE))
+        return MAE
+
+    # is it correct?
+    def sae(self, prediction, true):
+        print("Starting SAE")
+        SAE = abs(true - prediction)
+        #print("SAE 1 = ", str(SAE))
+        SAE = np.sum(SAE)
+        #print("SAE 1 = ", str(SAE))
+        return SAE"""
+
     def mae(self, prediction, true):
         MAE = abs(true - prediction)
         MAE = np.sum(MAE)
         MAE = MAE / len(prediction)
         return MAE
 
-    def sae(self, prediction, true):
-        SAE = abs(true - prediction)
-        SAE = np.sum(SAE)
+
+    def sae(self, prediction, true, N):
+        T = len(prediction)
+        K = int(T / N)
+        SAE = 0
+        for k in range(1, N):
+            pred_r = np.sum(prediction[k * N: (k + 1) * N])
+            true_r = np.sum(true[k * N: (k + 1) * N])
+            SAE += abs(true_r - pred_r)
+        SAE = SAE / (K * N)
         return SAE
 
     def test_model(self):
@@ -80,18 +140,20 @@ class Tester():
 
         # Calculate the optimum steps per epoch.
         steps_per_test_epoch = np.round(math.floor(test_generator.max_number_of_windows / self.__number_of_windows)-math.floor(self._input_window_length/self.__number_of_windows), decimals=0)
+        #steps_per_test_epoch = np.round(math.floor(test_generator.max_number_of_windows / self.__number_of_windows), decimals=0)
+        #np.round(int(test_generator.total_size / self.__batch_size), decimals=0)
         #1827 for fridge
-        #steps_per_test_epoch = np.round(int(test_generator.total_size / self.__batch_size), decimals=0)
+        steps_per_test_epoch = np.round(int(test_generator.total_size / self.__batch_size), decimals=0)
         print("steps_per_test_epoch: " + str(steps_per_test_epoch))
 
         # Test the model.
         start_time = time.time()
-        testing_history = model.predict(x=test_generator.load_dataset(), steps=steps_per_test_epoch-self.__number_of_windows, verbose=2)
+        testing_history = model.predict(x=test_generator.load_dataset(), verbose=2)
 
         end_time = time.time()
         test_time = end_time - start_time
 
-        evaluation_metrics = model.evaluate(x=test_generator.load_dataset(), steps=steps_per_test_epoch-self.__number_of_windows)
+        evaluation_metrics = model.evaluate(x=test_generator.load_dataset())
 
         self.log_results(model, test_time, evaluation_metrics)
         self.plot_results(testing_history, test_input, test_target)
@@ -112,6 +174,7 @@ class Tester():
         data_frame = pd.read_csv(directory, nrows=self.__crop, skiprows=0, header=0)
         test_input = np.round(np.array(data_frame.iloc[:, 0], float), 6)
         test_target = np.round(np.array(data_frame.iloc[self.__window_offset: -self.__window_offset, 1], float), 6)
+        #test_target = np.round(np.array(data_frame.iloc[:, 1], float), 6)
         
         del data_frame
         return test_input, test_target
@@ -126,6 +189,8 @@ class Tester():
         evaluation metrics (list): The MSE, MAE, and various compression ratios of the model.
 
         """
+
+        print(evaluation_metrics)
 
         inference_log = "Inference Time: " + str(test_time)
         logging.info(inference_log)
@@ -203,21 +268,27 @@ class Tester():
 
         """
 
-        #comparable_metric_string = "Own defined metrics (before post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target))
-        #logging.info(comparable_metric_string)
+        """print("Here 1")
+        comparable_metric_string = "Own defined metrics (before post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target))
+        print("Here 1.5")
+        logging.info(comparable_metric_string)
+        print("Here 1/2")"""
 
         testing_history = ((testing_history * appliance_data[self.__appliance]["std"]) + appliance_data[self.__appliance]["mean"])
         test_target = ((test_target * appliance_data[self.__appliance]["std"]) + appliance_data[self.__appliance]["mean"])
         test_agg = (test_input.flatten() * mains_data["std"]) + mains_data["mean"]
         #test_agg = test_agg[:testing_history.size]
 
+        #print("Here 2")
+
         # Can't have negative energy readings - set any results below 0 to 0.
         test_target[test_target < 0] = 0
         testing_history[testing_history < 0] = 0
         test_input[test_input < 0] = 0
 
-        #comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target))
-        #logging.info(comparable_metric_string)
+        comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 1200)), " F1: ", str(self.f1(testing_history, test_target))
+        logging.info(comparable_metric_string)
+        print("Own defined metrics logging done successfully!")
 
         # Plot testing outcomes against ground truth.
         """plt.figure(1)
@@ -231,12 +302,21 @@ class Tester():
 
         plt.figure(1)
         plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
+        plt.plot(test_target, label="Ground Truth")
+        plt.plot(testing_history, label="Predicted")
+        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
+        plt.ylabel("Power Value (Watts)")
+        plt.xlabel("Testing Window")
+        plt.legend()
+
+        """plt.figure(1)
+        plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
         plt.plot(test_target[:test_agg.size - (2 * self.__window_offset)], label="Ground Truth")
         plt.plot(testing_history[:test_agg.size - (2 * self.__window_offset)], label="Predicted")
         plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
         plt.ylabel("Power Value (Watts)")
         plt.xlabel("Testing Window")
-        plt.legend()
+        plt.legend()"""
 
         file_path = "./" + "saved_models/" + self.__appliance + "_" + self.__algorithm + "_" + self.__network_type + "_test_figure(everything).png"
         plt.savefig(fname=file_path)

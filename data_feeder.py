@@ -179,7 +179,8 @@ class TestSlidingWindowGenerator(object):
         """
 
         self.__inputs = self.__inputs.flatten()
-        #max_number_of_windows = self.__inputs.size - 2 * self.__offset
+        self.max_number_of_windows = self.__inputs.size - 2 * self.__offset 
+        #self.max_number_of_windows = len(self.__targets)
         print("max_number_of_windows:" + str(self.max_number_of_windows))
 
         if self.__number_of_windows < 0:
@@ -194,5 +195,6 @@ class TestSlidingWindowGenerator(object):
             input_data = np.array([self.__inputs[index : index + 2 * self.__offset + 1] for index in splice])
             """print("splice:" + str(splice))
             print("self.__offset:" + str(self.__offset))"""
-            target_data = self.__targets[splice + self.__offset].reshape(-1, 1)
+            #target_data = self.__targets[splice + self.__offset].reshape(-1, 1)
+            target_data = self.__targets[splice].reshape(-1, 1)
             yield input_data, target_data
