@@ -344,6 +344,15 @@ class Tester():
         plt.legend()
 
         """plt.figure(1)
+        #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
+        plt.plot(test_target[2900:3100], label="Ground Truth")
+        plt.plot(testing_history[2900:3100], label="Predicted")
+        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
+        plt.ylabel("Power Value (Watts)")
+        plt.xlabel("Testing Window")
+        plt.legend()"""
+
+        """plt.figure(1)
         plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
         plt.plot(test_target[:test_agg.size - (2 * self.__window_offset)], label="Ground Truth")
         plt.plot(testing_history[:test_agg.size - (2 * self.__window_offset)], label="Predicted")
