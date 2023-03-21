@@ -36,11 +36,15 @@ class TrainSlidingWindowGenerator():
         self.__chunk_size = 10 ** 6
         self.__shuffle = shuffle
         self.__offset = offset
-        self.__crop = crop
+        if crop == -1:
+            self.__crop = None
+        else:
+            self.__crop = crop
         self.__skip_rows = skip_rows
         self.__ram_threshold = ram_threshold
         self.total_size = 0
-        self.__total_num_samples = crop
+        self.__total_num_samples = 0
+        self.check_if_chunking()
 
     @property
     def total_num_samples(self):
@@ -64,6 +68,7 @@ class TrainSlidingWindowGenerator():
                             skiprows=self.__skip_rows)
         print("Counting number of rows...")
         self.total_size = len(chunks)
+        self.total_num_samples = len(chunks) - 2 * self.__offset
         del chunks
         print("Done.")
 
@@ -96,7 +101,7 @@ class TrainSlidingWindowGenerator():
             inputs = data_array[:, 0]
             outputs = data_array[:, 1]
 
-            maximum_batch_size = inputs.size - 2 * self.__offset
+            maximum_batch_size = len(inputs) - 2 * self.__offset
             #maximum_batch_size = inputs.size
             print("maximum_batch_size: " + str(maximum_batch_size))
 
@@ -131,7 +136,7 @@ class TrainSlidingWindowGenerator():
                 inputs = data_array[:, 0]
                 outputs = data_array[:, 1]
 
-                maximum_batch_size = inputs.size - 2 * self.__offset
+                maximum_batch_size = len(inputs) - 2 * self.__offset
                 self.total_num_samples = maximum_batch_size
                 if self.__batch_size < 0:
                     self.__batch_size = maximum_batch_size
@@ -167,7 +172,7 @@ class TestSlidingWindowGenerator(object):
         self.__inputs = inputs
         self.__targets = targets
         self.total_size = len(inputs)
-        self.max_number_of_windows = self.__inputs.size - 2 * self.__offset
+        self.max_number_of_windows = len(inputs) - 2 * self.__offset
 
     def load_dataset(self):
 
@@ -179,7 +184,7 @@ class TestSlidingWindowGenerator(object):
         """
 
         self.__inputs = self.__inputs.flatten()
-        self.max_number_of_windows = self.__inputs.size - 2 * self.__offset 
+        self.max_number_of_windows = len(self.__inputs) - 2 * self.__offset 
         #self.max_number_of_windows = len(self.__targets)
         print("max_number_of_windows:" + str(self.max_number_of_windows))
 

@@ -99,7 +99,8 @@ class Trainer():
         # Calculate the optimum steps per epoch.
         # self.__training_chunker.check_if_chunking()
         #steps_per_training_epoch = np.round(int(self.__training_chunker.total_size / self.__batch_size), decimals=0)
-        steps_per_training_epoch = np.round(int(self.__training_chunker.total_num_samples / self.__batch_size), decimals=0)
+        print("self.__training_chunker.total_num_samples: ", str(self.__training_chunker.total_num_samples))
+        steps_per_training_epoch = np.round(self.__training_chunker.total_num_samples // self.__batch_size, decimals=0)
 
         print("steps_per_training_epoch: " + str(steps_per_training_epoch))
         
@@ -162,7 +163,8 @@ class Trainer():
         ############################################################
 
         #self.__validation_steps = np.round(int(self.__validation_chunker.total_size / self.__batch_size), decimals=0)
-        self.__validation_steps = np.round(int(self.__validation_chunker.total_num_samples / self.__batch_size), decimals=0)
+        print("self.__validation_chunker.total_num_samples: ", str(self.__validation_chunker.total_num_samples))
+        self.__validation_steps = np.round(self.__validation_chunker.total_num_samples // self.__batch_size, decimals=0)
         print("__batch_size: " + str(self.__batch_size))
         print("total_num_samples: " + str(self.__validation_chunker.total_num_samples))
         print("__validation_steps: " + str(self.__validation_steps))

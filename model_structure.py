@@ -43,18 +43,19 @@ def create_model(input_window_length):
     # units = 256,512,1024
     # decrease/increase number of units?
     """biDirectionalLstm_1 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32, activation="tanh", return_sequences=True, dropout=0.5, recurrent_dropout=0.5), merge_mode="concat")(max_pool_5)
-    biDirectionalLstm_2 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64, activation="tanh", return_sequences=True, dropout=0.5, recurrent_dropout=0.5), merge_mode="concat")(biDirectionalLstm_1)"""
+     biDirectionalLstm_2 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64, activation="tanh", return_sequences=True, dropout=0.5, recurrent_dropout=0.5), merge_mode="concat")(biDirectionalLstm_1)"""
 
-    biDirectionalLstm_1 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128, activation="tanh", return_sequences=False), merge_mode="concat")(max_pool_3)
+    biDirectionalLstm_1 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128, activation="tanh", return_sequences=True), merge_mode="concat")(max_pool_3)
     #biDirectionalLstm_2 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128, activation="tanh", return_sequences=True), merge_mode="concat")(biDirectionalLstm_1)
     flatten_layer = tf.keras.layers.Flatten()(biDirectionalLstm_1)
+    #dropout_layer_1 = tf.keras.layers.Dropout(rate=0.5)(flatten_layer)
 
     # decrease/increase number of units?
     label_layer_1 = tf.keras.layers.Dense(128)(flatten_layer)
     normalization_5 = tf.keras.layers.BatchNormalization()(label_layer_1)
     activation_5 = tf.keras.layers.Activation('relu')(normalization_5)
     dropout_layer_2 = tf.keras.layers.Dropout(rate=0.5)(activation_5)
-
+ 
     """label_layer_2 = tf.keras.layers.Dense(128)(dropout_layer_2)
     normalization_6 = tf.keras.layers.BatchNormalization()(label_layer_2)
     activation_6 = tf.keras.layers.Activation('relu')(normalization_6)

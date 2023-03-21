@@ -162,7 +162,7 @@ class Tester():
         #steps_per_test_epoch = np.round(math.floor(test_generator.max_number_of_windows / self.__number_of_windows), decimals=0)
         #np.round(int(test_generator.total_size / self.__batch_size), decimals=0)
         #1827 for fridge
-        steps_per_test_epoch = np.round(int(test_generator.total_size / self.__batch_size), decimals=0)
+        steps_per_test_epoch = np.round(test_generator.max_number_of_windows // self.__number_of_windows, decimals=0)
         print("steps_per_test_epoch: " + str(steps_per_test_epoch))
 
         # Test the model.
@@ -190,11 +190,14 @@ class Tester():
 
         """
 
+        if self.__crop == -1:
+            self.__crop = None
         data_frame = pd.read_csv(directory, nrows=self.__crop, skiprows=0, header=0)
         test_input = np.round(np.array(data_frame.iloc[:, 0], float), 6)
         test_target = np.round(np.array(data_frame.iloc[self.__window_offset: -self.__window_offset, 1], float), 6)
         #test_target = np.round(np.array(data_frame.iloc[:, 1], float), 6)
-        
+        print("The dataset contains ", len(test_input), " rows")
+
         del data_frame
         return test_input, test_target
 
@@ -334,23 +337,23 @@ class Tester():
         plt.xlabel("Testing Window")
         plt.legend()"""
 
-        plt.figure(1)
+        """plt.figure(1)
         plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
         plt.plot(test_target, label="Ground Truth")
         plt.plot(testing_history, label="Predicted")
         plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
         plt.ylabel("Power Value (Watts)")
         plt.xlabel("Testing Window")
-        plt.legend()
+        plt.legend()"""
 
-        """plt.figure(1)
+        plt.figure(1)
         #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
         plt.plot(test_target[2900:3100], label="Ground Truth")
         plt.plot(testing_history[2900:3100], label="Predicted")
         plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
         plt.ylabel("Power Value (Watts)")
         plt.xlabel("Testing Window")
-        plt.legend()"""
+        plt.legend()
 
         """plt.figure(1)
         plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
