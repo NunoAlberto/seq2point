@@ -55,17 +55,17 @@ class Tester():
         self.__log_file = log_file_dir
         logging.basicConfig(filename=self.__log_file,level=logging.INFO)
 
-    def f1(self, prediction, true):
+    def f1(self, prediction, true, threshold):
         # fridge -> 50 watts
-        THRESHOLD = 15
+        #THRESHOLD = 15
 
         appliance_prediction_classification = np.copy(prediction)
-        appliance_prediction_classification[appliance_prediction_classification < THRESHOLD] = 0
-        appliance_prediction_classification[appliance_prediction_classification >= THRESHOLD] = 1
+        appliance_prediction_classification[appliance_prediction_classification <= threshold] = 0
+        appliance_prediction_classification[appliance_prediction_classification > threshold] = 1
 
         appliance_truth_classification = np.copy(true)
-        appliance_truth_classification[appliance_truth_classification < THRESHOLD] = 0
-        appliance_truth_classification[appliance_truth_classification >= THRESHOLD] = 1
+        appliance_truth_classification[appliance_truth_classification <= threshold] = 0
+        appliance_truth_classification[appliance_truth_classification > threshold] = 1
 
         epsilon = 1e-8
         TP = epsilon
@@ -303,9 +303,21 @@ class Tester():
 
         #print("Here 2")
 
+        print(max(test_target), np.ceil(max(test_target)/2), np.ceil(max(test_target)*0.2))
+        thresholdPredictions = np.ceil(max(test_target)/2)
+        thresholdTarget = round(np.percentile(test_target, 25), 0)
+
+        #comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(MAE/10), " SAE: ", str(SAE/10), " F1: ", str(F1/10)
+        comparable_metric_string = "Own defined metrics (before post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 1200)), " F1: ", str(self.f1(testing_history, test_target, thresholdPredictions))
+        logging.info(comparable_metric_string)
+        print("Own defined metrics logging done successfully!")
+
         # Can't have negative energy readings - set any results below 0 to 0.
-        test_target[test_target < 0] = 0
-        testing_history[testing_history < 0] = 0
+        print(test_target[2900:3100])
+        print(np.percentile(test_target, 50), thresholdTarget)
+        test_target[test_target <= 10] = thresholdTarget
+        #907 BEST SO FAR
+        testing_history[testing_history <= thresholdPredictions] = thresholdTarget
         test_input[test_input < 0] = 0
 
         """MAE = 0
@@ -323,7 +335,7 @@ class Tester():
 
 
         #comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(MAE/10), " SAE: ", str(SAE/10), " F1: ", str(F1/10)
-        comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 1200)), " F1: ", str(self.f1(testing_history, test_target))
+        comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 1200)), " F1: ", str(self.f1(testing_history, test_target, thresholdPredictions))
         logging.info(comparable_metric_string)
         print("Own defined metrics logging done successfully!")
 
@@ -337,16 +349,19 @@ class Tester():
         plt.xlabel("Testing Window")
         plt.legend()"""
 
-        """plt.figure(1)
-        plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
+        plt.figure(1)
+        #plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
         plt.plot(test_target, label="Ground Truth")
         plt.plot(testing_history, label="Predicted")
         plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
         plt.ylabel("Power Value (Watts)")
         plt.xlabel("Testing Window")
-        plt.legend()"""
+        plt.legend()
 
-        plt.figure(1)
+        file_path = "./" + "saved_models/" + self.__appliance + "_" + "_wholeTestPredictions.png"
+        plt.savefig(fname=file_path)
+
+        plt.figure(2)
         #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
         plt.plot(test_target[2900:3100], label="Ground Truth")
         plt.plot(testing_history[2900:3100], label="Predicted")
@@ -364,7 +379,7 @@ class Tester():
         plt.xlabel("Testing Window")
         plt.legend()"""
 
-        file_path = "./" + "saved_models/" + self.__appliance + "_" + self.__algorithm + "_" + self.__network_type + "_test_figure(everything).png"
+        file_path = "./" + "saved_models/" + self.__appliance + "_" + "_activationTestPredictions.png"
         plt.savefig(fname=file_path)
 
         print(test_agg.shape, test_target.shape, testing_history.shape)

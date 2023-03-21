@@ -196,5 +196,5 @@ class Trainer():
         plt.xlabel('Epoch')
         plt.legend()
 
-        file_name = "./" + "/saved_models/" + self.__appliance + "_" + self.__network_type + "_training_results.png"
+        file_name = "./" + "/saved_models/" + self.__appliance + "_lossCurves.png"
         plt.savefig(fname=file_name)

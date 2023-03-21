@@ -9,7 +9,7 @@ from seq2point_test import Tester
 #python test_main.py --appliance_name dishwasher --input_window_length 1537 --crop 183543 --batch_size 32 --test_directory dishwasherData/dishwasher_test_.csv
 #python test_main.py --appliance_name washingmachine --input_window_length 2303 --crop 183543 --batch_size 32 --test_directory washingmachineData/washingmachine_test_.csv
 
-#python test_main.py --appliance_name microwave --input_window_length 21 --crop 183543 --batch_size 64 --test_directory microwaveData/microwave_test_.csv
+#python test_main.py --appliance_name microwave --input_window_length 21 --crop -1 --batch_size 64 --test_directory microwaveData/microwave_test_.csv
 #python test_main.py --appliance_name fridge --input_window_length 475 --crop 183543 --batch_size 64 --test_directory fridgeData/fridge_test_.csv
 #python test_main.py --appliance_name dishwasher --input_window_length 1537 --crop 183543 --batch_size 32 --test_directory dishwasherData/dishwasher_test_.csv
 #python test_main.py --appliance_name washingmachine --input_window_length 2303 --crop 183543 --batch_size 32 --test_directory washingmachineData/washingmachine_test_.csv
@@ -33,10 +33,10 @@ parser.add_argument("--test_directory", type=str, default=test_directory, help="
 arguments = parser.parse_args()
 
 # You need to provide the trained model
-saved_model_dir = "saved_models/" + arguments.appliance_name + "_" + arguments.algorithm + "_model.h5"
+saved_model_dir = "saved_models/" + arguments.appliance_name + "_model.h5"
 
 # The logs including results will be recorded to this log file
-log_file_dir = "saved_models/" + arguments.appliance_name + "_" + arguments.algorithm + "_" + arguments.network_type + ".log"
+log_file_dir = "saved_models/" + arguments.appliance_name + ".log"
 
 tester = Tester(arguments.appliance_name, arguments.algorithm, arguments.crop, 
                 arguments.batch_size, arguments.network_type,

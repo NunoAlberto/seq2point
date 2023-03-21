@@ -10,7 +10,7 @@ from seq2point_train import Trainer
 
 # new window sizes
 # microwave signature -> 12 timesteps
-#python train_main.py --appliance_name microwave --input_window_length 21 --cropTrainingData 308948 --cropValidationData 77236 --epochs 100 --batch_size 64 --training_directory microwaveData/microwave_training_.csv --validation_directory microwaveData/microwave_validation_.csv
+#python train_main.py --appliance_name microwave --input_window_length 21 --cropTrainingData -1 --cropValidationData -1 --epochs 100 --batch_size 64 --training_directory microwaveData/microwave_training_.csv --validation_directory microwaveData/microwave_validation_.csv
 # fridge signature -> 124 timesteps / 276
 #python train_main.py --appliance_name fridge --input_window_length 495 --cropTrainingData 420215 --cropValidationData 105053 --epochs 100 --batch_size 64 --training_directory fridgeData/fridge_training_.csv --validation_directory fridgeData/fridge_validation_.csv
 # dishwasher signature ->  512 timesteps / 930 / 868
@@ -47,7 +47,7 @@ parser.add_argument("--validation_directory", type=str, default=validation_direc
 arguments = parser.parse_args()
 
 # Need to provide the trained model
-save_model_dir = "saved_models/" + arguments.appliance_name + "_" + arguments.network_type + "_model.h5"
+save_model_dir = "saved_models/" + arguments.appliance_name + "_model.h5"
 
 trainer = Trainer(arguments.appliance_name, arguments.batch_size, arguments.cropTrainingData, arguments.cropValidationData, arguments.network_type,
                   arguments.training_directory, arguments.validation_directory,
