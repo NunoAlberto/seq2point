@@ -13,10 +13,10 @@ from seq2point_train import Trainer
 #python train_main.py --appliance_name microwave --input_window_length 21 --cropTrainingData -1 --cropValidationData -1 --epochs 100 --batch_size 64 --training_directory microwaveData/microwave_training_.csv --validation_directory microwaveData/microwave_validation_.csv
 # fridge signature -> 124 timesteps / 276
 #python train_main.py --appliance_name fridge --input_window_length 495 --cropTrainingData -1 --cropValidationData -1 --epochs 100 --batch_size 64 --training_directory fridgeData/fridge_training_.csv --validation_directory fridgeData/fridge_validation_.csv
-# dishwasher signature ->  461 / 468 / 467 / 512 timesteps / 930 / 868
-#python train_main.py --appliance_name dishwasher --input_window_length 699 --cropTrainingData -1 --cropValidationData -1 --epochs 100 --batch_size 64 --training_directory dishwasherData/dishwasher_training_.csv --validation_directory dishwasherData/dishwasher_validation_.csv
-# washingmachine signature -> 457 timesteps
-#python train_main.py --appliance_name washingmachine --input_window_length 819 --cropTrainingData 583571 --cropValidationData 145892 --epochs 100 --batch_size 64 --training_directory washingmachineData/washingmachine_training_.csv --validation_directory washingmachineData/washingmachine_validation_.csv
+# dishwasher signature ->  461 timesteps
+#python train_main.py --appliance_name dishwasher --input_window_length 499 --cropTrainingData -1 --cropValidationData -1 --epochs 100 --batch_size 64 --training_directory dishwasherData/dishwasher_training_.csv --validation_directory dishwasherData/dishwasher_validation_.csv
+# washingmachine signature -> 669 / 718 timesteps // 1331 2 activation // 1443 1 mini & 2 activations
+#python train_main.py --appliance_name washingmachine --input_window_length 699 --cropTrainingData -1 --cropValidationData -1 --epochs 100 --batch_size 64 --training_directory washingmachineData/washingmachine_training_.csv --validation_directory washingmachineData/washingmachine_validation_.csv
 
 training_directory="microwaveData/microwave_training_.csv"
 validation_directory="microwaveData/microwave_validation_.csv"

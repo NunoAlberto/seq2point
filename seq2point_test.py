@@ -310,8 +310,8 @@ class Tester():
 
         #thresholdPredictions = 900 #microwave
         #thresholdPredictions = 60 #fridge
-        thresholdPredictions = 10 #dishwasher - 350
-        #thresholdPredictions = 10 #washing machine - 2750
+        #thresholdPredictions = 50 #dishwasher - 350
+        thresholdPredictions = 10 #washing machine - 2750
         #comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(MAE/10), " SAE: ", str(SAE/10), " F1: ", str(F1/10)
         comparable_metric_string = "Own defined metrics (before post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 1200)), " F1: ", str(self.f1(testing_history, test_target, thresholdPredictions))
         logging.info(comparable_metric_string)
@@ -319,6 +319,7 @@ class Tester():
 
         # Can't have negative energy readings - set any results below 0 to 0.
         print(test_target[2900:3100])
+        print(test_target[6200:7900])
         print(np.percentile(test_target, 50), thresholdTarget)
         test_target[test_target <= 10] = 0
         testing_history[testing_history <= thresholdPredictions] = 0
@@ -385,25 +386,25 @@ class Tester():
         plt.xlabel("Testing Window")
         plt.legend()"""
 
-        #dishwasher
+        """#dishwasher
         plt.figure(2)
         #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
-        plt.plot(test_target[:12500], label="Ground Truth")
-        plt.plot(testing_history[:12500], label="Predicted")
-        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
-        plt.ylabel("Power Value (Watts)")
-        plt.xlabel("Testing Window")
-        plt.legend()
-
-        """#washing machine
-        plt.figure(2)
-        #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
-        plt.plot(test_target[18000:26000], label="Ground Truth")
-        plt.plot(testing_history[18000:26000], label="Predicted")
+        plt.plot(test_target[6850:7450], label="Ground Truth")
+        plt.plot(testing_history[6850:7450], label="Predicted")
         plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
         plt.ylabel("Power Value (Watts)")
         plt.xlabel("Testing Window")
         plt.legend()"""
+
+        #washing machine
+        plt.figure(2)
+        #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
+        plt.plot(test_target[82000:94000], label="Ground Truth")
+        plt.plot(testing_history[82000:94000], label="Predicted")
+        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
+        plt.ylabel("Power Value (Watts)")
+        plt.xlabel("Testing Window")
+        plt.legend()
 
         """plt.figure(1)
         plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
