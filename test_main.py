@@ -9,10 +9,10 @@ from seq2point_test import Tester
 #python test_main.py --appliance_name dishwasher --input_window_length 1537 --crop 183543 --batch_size 32 --test_directory dishwasherData/dishwasher_test_.csv
 #python test_main.py --appliance_name washingmachine --input_window_length 2303 --crop 183543 --batch_size 32 --test_directory washingmachineData/washingmachine_test_.csv
 
-#python test_main.py --appliance_name microwave --input_window_length 21 --crop -1 --batch_size 64 --test_directory microwaveData/microwave_test_.csv
+#python test_main.py --appliance_name microwave --input_window_length 29 --crop -1 --batch_size 64 --test_directory microwaveData/microwave_test_.csv
 #python test_main.py --appliance_name fridge --input_window_length 495 --crop -1 --batch_size 64 --test_directory fridgeData/fridge_test_.csv
 #python test_main.py --appliance_name dishwasher --input_window_length 699 --crop -1 --batch_size 64 --test_directory dishwasherData/dishwasher_test_.csv
-#python test_main.py --appliance_name washingmachine --input_window_length 2303 --crop -1 --batch_size 64 --test_directory washingmachineData/washingmachine_test_.csv
+#python test_main.py --appliance_name washingmachine --input_window_length 499 --crop -1 --batch_size 64 --test_directory washingmachineData/washingmachine_test_.csv
 
 test_directory="microwaveData/microwave_test_.csv"
 

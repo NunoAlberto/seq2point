@@ -9,14 +9,15 @@ from seq2point_train import Trainer
 #python train_main.py --appliance_name washingmachine --input_window_length 2303 --cropTrainingData 583571 --cropValidationData 145892 --epochs 100 --batch_size 32 --training_directory washingmachineData/washingmachine_training_.csv --validation_directory washingmachineData/washingmachine_validation_.csv
 
 # new window sizes
-# microwave signature -> 12 timesteps
-#python train_main.py --appliance_name microwave --input_window_length 21 --cropTrainingData -1 --cropValidationData -1 --epochs 100 --batch_size 64 --training_directory microwaveData/microwave_training_.csv --validation_directory microwaveData/microwave_validation_.csv
-# fridge signature -> 124 timesteps / 276
+# microwave signature -> 12 timesteps / previous 21 window
+#python train_main.py --appliance_name microwave --input_window_length 71 --cropTrainingData -1 --cropValidationData -1 --epochs 100 --batch_size 64 --training_directory microwaveData/microwave_training_.csv --validation_directory microwaveData/microwave_validation_.csv
+# fridge signature -> 95 timesteps active / 150 timesteps inactive - 245 window
 #python train_main.py --appliance_name fridge --input_window_length 495 --cropTrainingData -1 --cropValidationData -1 --epochs 100 --batch_size 64 --training_directory fridgeData/fridge_training_.csv --validation_directory fridgeData/fridge_validation_.csv
 # dishwasher signature ->  461 timesteps
-#python train_main.py --appliance_name dishwasher --input_window_length 499 --cropTrainingData -1 --cropValidationData -1 --epochs 100 --batch_size 64 --training_directory dishwasherData/dishwasher_training_.csv --validation_directory dishwasherData/dishwasher_validation_.csv
-# washingmachine signature -> 669 / 718 timesteps // 1331 2 activation // 1443 1 mini & 2 activations
-#python train_main.py --appliance_name washingmachine --input_window_length 699 --cropTrainingData -1 --cropValidationData -1 --epochs 100 --batch_size 64 --training_directory washingmachineData/washingmachine_training_.csv --validation_directory washingmachineData/washingmachine_validation_.csv
+#python train_main.py --appliance_name dishwasher --input_window_length 1001 --cropTrainingData -1 --cropValidationData -1 --epochs 100 --batch_size 64 --training_directory dishwasherData/dishwasher_training_.csv --validation_directory dishwasherData/dishwasher_validation_.csv
+# washingmachine signature -> 1st group [mini (69); bigger activation (803); smaller (471)]; 2nd group [229]; 3rd group [706]; 4th group [mini (227); larger (668); mini (194); larger (718)]; 5th group [406]
+# 6th group [320]; 7th group [708]; 7th/8th group [632]; 9th group [190; 602; 839] - 1749
+#python train_main.py --appliance_name washingmachine --input_window_length 499 --cropTrainingData -1 --cropValidationData -1 --epochs 100 --batch_size 64 --training_directory washingmachineData/washingmachine_training_.csv --validation_directory washingmachineData/washingmachine_validation_.csv
 
 training_directory="microwaveData/microwave_training_.csv"
 validation_directory="microwaveData/microwave_validation_.csv"

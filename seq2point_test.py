@@ -311,7 +311,7 @@ class Tester():
         #thresholdPredictions = 900 #microwave
         #thresholdPredictions = 60 #fridge
         #thresholdPredictions = 50 #dishwasher - 350
-        thresholdPredictions = 10 #washing machine - 2750
+        thresholdPredictions = 500 #washing machine - 2750
         #comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(MAE/10), " SAE: ", str(SAE/10), " F1: ", str(F1/10)
         comparable_metric_string = "Own defined metrics (before post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 1200)), " F1: ", str(self.f1(testing_history, test_target, thresholdPredictions))
         logging.info(comparable_metric_string)
@@ -375,7 +375,7 @@ class Tester():
         plt.ylabel("Power Value (Watts)")
         plt.xlabel("Testing Window")
         plt.legend()"""
-
+        
         """#fridge
         plt.figure(2)
         #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
