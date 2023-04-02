@@ -308,10 +308,10 @@ class Tester():
         thresholdTarget = round(np.percentile(test_target, 25), 0)
         print(thresholdPredictions, thresholdTarget)
 
-        #thresholdPredictions = 900 #microwave
-        #thresholdPredictions = 60 #fridge
-        #thresholdPredictions = 50 #dishwasher - 350
-        thresholdPredictions = 500 #washing machine - 2750
+        thresholdPredictions = 815 #microwave
+        #thresholdPredictions = 45 #fridge
+        #thresholdPredictions = 25 #dishwasher
+        #thresholdPredictions = 40 #washing machine
         #comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(MAE/10), " SAE: ", str(SAE/10), " F1: ", str(F1/10)
         comparable_metric_string = "Own defined metrics (before post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 1200)), " F1: ", str(self.f1(testing_history, test_target, thresholdPredictions))
         logging.info(comparable_metric_string)
@@ -366,45 +366,45 @@ class Tester():
         file_path = "./" + "saved_models/" + self.__appliance + "_" + "_wholeTestPredictions.png"
         plt.savefig(fname=file_path)
 
-        """#microwave
+        #microwave
         plt.figure(2)
         #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
-        plt.plot(test_target[2900:3100], label="Ground Truth")
-        plt.plot(testing_history[2900:3100], label="Predicted")
+        plt.plot(test_target[2970:3080], label="Ground Truth")
+        plt.plot(testing_history[2970:3080], label="Predicted")
+        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
+        plt.ylabel("Power Value (Watts)")
+        plt.xlabel("Testing Window")
+        plt.legend()
+        
+        """#fridge
+        plt.figure(2)
+        #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
+        plt.plot(test_target[5915:6085], label="Ground Truth")
+        plt.plot(testing_history[5915:6085], label="Predicted")
         plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
         plt.ylabel("Power Value (Watts)")
         plt.xlabel("Testing Window")
         plt.legend()"""
         
-        """#fridge
-        plt.figure(2)
-        #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
-        plt.plot(test_target[:2000], label="Ground Truth")
-        plt.plot(testing_history[:2000], label="Predicted")
-        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
-        plt.ylabel("Power Value (Watts)")
-        plt.xlabel("Testing Window")
-        plt.legend()"""
-
         """#dishwasher
         plt.figure(2)
         #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
-        plt.plot(test_target[6850:7450], label="Ground Truth")
-        plt.plot(testing_history[6850:7450], label="Predicted")
+        plt.plot(test_target[100600:101170], label="Ground Truth")
+        plt.plot(testing_history[100600:101170], label="Predicted")
         plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
         plt.ylabel("Power Value (Watts)")
         plt.xlabel("Testing Window")
         plt.legend()"""
 
-        #washing machine
+        """#washing machine
         plt.figure(2)
         #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
-        plt.plot(test_target[82000:94000], label="Ground Truth")
-        plt.plot(testing_history[82000:94000], label="Predicted")
+        plt.plot(test_target[92440:93250], label="Ground Truth")
+        plt.plot(testing_history[92440:93250], label="Predicted")
         plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
         plt.ylabel("Power Value (Watts)")
         plt.xlabel("Testing Window")
-        plt.legend()
+        plt.legend()"""
 
         """plt.figure(1)
         plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
