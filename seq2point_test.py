@@ -55,15 +55,12 @@ class Tester():
         self.__log_file = log_file_dir
         logging.basicConfig(filename=self.__log_file,level=logging.INFO)
 
-    def f1(self, prediction, true, threshold):
-        # fridge -> 50 watts
-        #THRESHOLD = 15
-
+    def confusionMatrix(self, prediction, groundTruth, threshold):
         appliance_prediction_classification = np.copy(prediction)
         appliance_prediction_classification[appliance_prediction_classification <= threshold] = 0
         appliance_prediction_classification[appliance_prediction_classification > threshold] = 1
 
-        appliance_truth_classification = np.copy(true)
+        appliance_truth_classification = np.copy(groundTruth)
         appliance_truth_classification[appliance_truth_classification <= threshold] = 0
         appliance_truth_classification[appliance_truth_classification > threshold] = 1
 
@@ -83,10 +80,20 @@ class Tester():
                 FP += 1
             elif prediction_binary == 0 and truth_binary == 0:
                 TN += 1
-        R = TP / (TP + FN)
-        P = TP / (TP + FP)
-        f1 = (2 * P * R) / (P + R)
-        return f1
+
+        return TP, FN, FP, TN
+
+    def precision(self, TP, FP):
+        return TP / (TP + FP)
+
+    def recall(self, TP, FN):
+        return TP / (TP + FN)
+
+    def f1(self, precision, recall):
+        return (2 * precision * recall) / (precision + recall)
+
+    def accuracy(self, TP, FN, FP, TN):
+        return (TP + TN) / (TP + FN + FP + TN)
 
     """def mae(self, prediction, true):
         #print("Starting MAE")
@@ -144,6 +151,15 @@ class Tester():
         SAE = SAE / N
         #print("2: ", str(SAE))
         return SAE
+
+    def rmse(self, prediction, true):
+        RMSE = 0
+        for i in range(len(prediction)):
+            RMSE += (true[i] - prediction[i])**2
+        RMSE = RMSE / len(prediction)
+        RMSE = np.sqrt(RMSE)
+        
+        return RMSE
 
     def test_model(self):
 
@@ -313,7 +329,9 @@ class Tester():
         #thresholdPredictions = 25 #dishwasher
         #thresholdPredictions = 40 #washing machine
         #comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(MAE/10), " SAE: ", str(SAE/10), " F1: ", str(F1/10)
-        comparable_metric_string = "Own defined metrics (before post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 1200)), " F1: ", str(self.f1(testing_history, test_target, thresholdPredictions))
+
+        TP, FN, FP, TN = self.confusionMatrix(testing_history, test_target, thresholdPredictions)
+        comparable_metric_string = "Before post-processing - MAE: ", str(self.mae(testing_history, test_target)), " RMSE: ", str(self.rmse(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 1200)), " Precision: ", str(self.precision(TP, FP)), " Recall: ", str(self.recall(TP, FN)), " F1: ", str(self.f1(self.precision(TP, FP), self.recall(TP, FN))), " Accuracy: ", str(self.accuracy(TP, FN, FP, TN))
         logging.info(comparable_metric_string)
         print("Own defined metrics logging done successfully!")
 
@@ -340,7 +358,8 @@ class Tester():
 
 
         #comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(MAE/10), " SAE: ", str(SAE/10), " F1: ", str(F1/10)
-        comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 1200)), " F1: ", str(self.f1(testing_history, test_target, thresholdPredictions))
+        TP, FN, FP, TN = self.confusionMatrix(testing_history, test_target, thresholdPredictions)
+        comparable_metric_string = "After post-processing - MAE: ", str(self.mae(testing_history, test_target)), " RMSE: ", str(self.rmse(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 1200)), " Precision: ", str(self.precision(TP, FP)), " Recall: ", str(self.recall(TP, FN)), " F1: ", str(self.f1(self.precision(TP, FP), self.recall(TP, FN))), " Accuracy: ", str(self.accuracy(TP, FN, FP, TN))
         logging.info(comparable_metric_string)
         print("Own defined metrics logging done successfully!")
 

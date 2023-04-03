@@ -1,4 +1,4 @@
-INFO:root:Inference Time: 61.32207369804382
+INFO:root:Inference Time: 61.677241563797
 INFO:root:('MSE: ', '0.004498334135860205', ' MAE: ', '0.011145928874611855')
 INFO:root:CONV. ZEROS: 0
 INFO:root:CONV. WEIGHTS: 35040
@@ -11,5 +11,5 @@ INFO:root:
 INFO:root:TOTAL ZEROS: 35040
 INFO:root:TOTAL WEIGHTS: 3150913
 INFO:root:TOTAL RATIO: 0.01112058631894946
-INFO:root:('Own defined metrics (before post-processing) - MAE: ', '11.145915817738924', ' SAE: ', '11.096207625558435', ' F1: ', '0.2969804618131653')
-INFO:root:('Own defined metrics (after post-processing) - MAE: ', '8.05897616194001', ' SAE: ', '8.066669009059446', ' F1: ', '0.2969804618131653')
+INFO:root:('Before post-processing - MAE: ', '11.145915817738924', ' RMSE: ', '67.06963111336952', ' SAE: ', '11.096207625558435', ' Precision: ', '0.24064478986908094', ' Recall: ', '0.3877551020418576', ' F1: ', '0.2969804618131653', ' Accuracy: ', '0.9783531316312314')
+INFO:root:('After post-processing - MAE: ', '8.05897616194001', ' RMSE: ', '67.34639801550168', ' SAE: ', '8.066669009059446', ' Precision: ', '0.24064478986908094', ' Recall: ', '0.3877551020418576', ' F1: ', '0.2969804618131653', ' Accuracy: ', '0.9783531316312314')
