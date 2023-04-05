@@ -131,22 +131,19 @@ class Tester():
         MAE = MAE / len(prediction)
         
         return MAE
-
-
-    def sae(self, prediction, true, N):
-        """print(prediction.shape)
-        print(true.shape)"""
+    
+    def sae(self, prediction, true, K):
         T = len(prediction)
-        K = int(T / N)
+        N = math.floor(T / K)
         SAE = 0
         for k in range(0, N):
             startIndex = k * K
             lastIndex = (k + 1) * K
-            if lastIndex > T:
-                lastIndex = T
+
             pred_r = np.sum(prediction[startIndex:lastIndex])
             true_r = np.sum(true[startIndex:lastIndex])
-            SAE += abs(true_r - pred_r)/len(prediction[startIndex:lastIndex])
+            SAE += abs(true_r - pred_r)/K
+            
         #print("1: ", str(SAE))
         SAE = SAE / N
         #print("2: ", str(SAE))
@@ -324,14 +321,14 @@ class Tester():
         thresholdTarget = round(np.percentile(test_target, 25), 0)
         print(thresholdPredictions, thresholdTarget)
 
-        thresholdPredictions = 815 #microwave
+        #thresholdPredictions = 815 #microwave
         #thresholdPredictions = 45 #fridge
         #thresholdPredictions = 25 #dishwasher
-        #thresholdPredictions = 40 #washing machine
+        thresholdPredictions = 40 #washing machine
         #comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(MAE/10), " SAE: ", str(SAE/10), " F1: ", str(F1/10)
 
         TP, FN, FP, TN = self.confusionMatrix(testing_history, test_target, thresholdPredictions)
-        comparable_metric_string = "Before post-processing - MAE: ", str(self.mae(testing_history, test_target)), " RMSE: ", str(self.rmse(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 1200)), " Precision: ", str(self.precision(TP, FP)), " Recall: ", str(self.recall(TP, FN)), " F1: ", str(self.f1(self.precision(TP, FP), self.recall(TP, FN))), " Accuracy: ", str(self.accuracy(TP, FN, FP, TN))
+        comparable_metric_string = "Before post-processing - MAE: ", str(self.mae(testing_history, test_target)), " RMSE: ", str(self.rmse(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 450)), " Precision: ", str(self.precision(TP, FP)), " Recall: ", str(self.recall(TP, FN)), " F1: ", str(self.f1(self.precision(TP, FP), self.recall(TP, FN))), " Accuracy: ", str(self.accuracy(TP, FN, FP, TN))
         logging.info(comparable_metric_string)
         print("Own defined metrics logging done successfully!")
 
@@ -359,7 +356,7 @@ class Tester():
 
         #comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(MAE/10), " SAE: ", str(SAE/10), " F1: ", str(F1/10)
         TP, FN, FP, TN = self.confusionMatrix(testing_history, test_target, thresholdPredictions)
-        comparable_metric_string = "After post-processing - MAE: ", str(self.mae(testing_history, test_target)), " RMSE: ", str(self.rmse(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 1200)), " Precision: ", str(self.precision(TP, FP)), " Recall: ", str(self.recall(TP, FN)), " F1: ", str(self.f1(self.precision(TP, FP), self.recall(TP, FN))), " Accuracy: ", str(self.accuracy(TP, FN, FP, TN))
+        comparable_metric_string = "After post-processing - MAE: ", str(self.mae(testing_history, test_target)), " RMSE: ", str(self.rmse(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 450)), " Precision: ", str(self.precision(TP, FP)), " Recall: ", str(self.recall(TP, FN)), " F1: ", str(self.f1(self.precision(TP, FP), self.recall(TP, FN))), " Accuracy: ", str(self.accuracy(TP, FN, FP, TN))
         logging.info(comparable_metric_string)
         print("Own defined metrics logging done successfully!")
 
