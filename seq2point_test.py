@@ -321,10 +321,10 @@ class Tester():
         thresholdTarget = round(np.percentile(test_target, 25), 0)
         print(thresholdPredictions, thresholdTarget)
 
-        #thresholdPredictions = 815 #microwave
+        thresholdPredictions = 815 #microwave
         #thresholdPredictions = 45 #fridge
         #thresholdPredictions = 25 #dishwasher
-        thresholdPredictions = 40 #washing machine
+        #thresholdPredictions = 40 #washing machine
         #comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(MAE/10), " SAE: ", str(SAE/10), " F1: ", str(F1/10)
 
         TP, FN, FP, TN = self.confusionMatrix(testing_history, test_target, thresholdPredictions)
@@ -374,9 +374,9 @@ class Tester():
         #plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
         plt.plot(test_target, label="Ground Truth")
         plt.plot(testing_history, label="Predicted")
-        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
-        plt.ylabel("Power Value (Watts)")
-        plt.xlabel("Testing Window")
+        plt.title(self.__appliance)
+        plt.ylabel("Power (Watts)")
+        plt.xlabel("Timestep")
         plt.legend()
 
         file_path = "./" + "saved_models/" + self.__appliance + "_" + "_wholeTestPredictions.png"
@@ -387,9 +387,9 @@ class Tester():
         #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
         plt.plot(test_target[2970:3080], label="Ground Truth")
         plt.plot(testing_history[2970:3080], label="Predicted")
-        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
-        plt.ylabel("Power Value (Watts)")
-        plt.xlabel("Testing Window")
+        plt.title("Microwave")
+        plt.ylabel("Power (Watts)")
+        plt.xlabel("Timestep")
         plt.legend()
         
         """#fridge
@@ -397,9 +397,9 @@ class Tester():
         #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
         plt.plot(test_target[5915:6085], label="Ground Truth")
         plt.plot(testing_history[5915:6085], label="Predicted")
-        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
-        plt.ylabel("Power Value (Watts)")
-        plt.xlabel("Testing Window")
+        plt.title("Fridge")
+        plt.ylabel("Power (Watts)")
+        plt.xlabel("Timestep")
         plt.legend()"""
         
         """#dishwasher
@@ -407,9 +407,9 @@ class Tester():
         #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
         plt.plot(test_target[100600:101170], label="Ground Truth")
         plt.plot(testing_history[100600:101170], label="Predicted")
-        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
-        plt.ylabel("Power Value (Watts)")
-        plt.xlabel("Testing Window")
+        plt.title("Dishwasher")
+        plt.ylabel("Power (Watts)")
+        plt.xlabel("Timestep")
         plt.legend()"""
 
         """#washing machine
@@ -417,9 +417,9 @@ class Tester():
         #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
         plt.plot(test_target[92440:93250], label="Ground Truth")
         plt.plot(testing_history[92440:93250], label="Predicted")
-        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
-        plt.ylabel("Power Value (Watts)")
-        plt.xlabel("Testing Window")
+        plt.title("Washing Machine")
+        plt.ylabel("Power (Watts)")
+        plt.xlabel("Timestep")
         plt.legend()"""
 
         """plt.figure(1)
