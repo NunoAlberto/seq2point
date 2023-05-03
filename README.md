@@ -10,7 +10,12 @@ Approximately a quarter of the global electric energy consumption is thought to 
 
 Energy disaggregation, also referred to as non-intrusive load monitoring (NILM), is the process of inferring appliance-level energy consumption from the aggregated load drawn by a household. Deep learning has become increasingly popular for performing NILM due to outperforming traditional approaches and overcoming some of the setbacks inherent to them, such as the need for expert knowledge. Techniques like pattern matching and blind source separation often have difficulties in a variety of real-life scenarios due to factors such as measurement equipment noise and substantial variations in power signatures between appliances of the same type.
 
-In this dissertation, a deep learning approach is proposed, with its main component being a deep neural network composed of convolutional, long short-term memory and dense layers as well as regularisation and normalisation blocks. The method also contained pre- and post-processing stages and it is trained and tested on data from four distinct appliances from the reference energy disaggregation data set (REDD), the most commonly used data set in NILM research. The proposed approach is shown to achieve stateof-the-art results, with performance metrics and training times being improved by as much as 41% and 88%, respectively.
+In this dissertation, a deep learning approach is proposed, with its main component being a deep neural network composed of convolutional, long short-term memory and dense layers as well as regularisation and normalisation blocks. The method also contained pre- and post-processing stages and it is trained and tested on data from four distinct appliances from the reference energy disaggregation data set (REDD), the most commonly used data set in NILM research. The proposed approach is shown to achieve state-of-the-art results, with performance metrics and training times being improved by as much as 41% and 88%, respectively. 
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/78552193/235866256-1181d3d6-0851-4c3c-8f1a-4c62695241d8.jpeg" />
+</p>
+<p align="center">Figure 1: Predictions of the four trained networks on a single activation of the testing set<p align="center">
 
 <br />
 
