@@ -105,5 +105,6 @@ def load_model(model, network_type, algorithm, appliance, saved_model_dir):
 
     model = tf.keras.models.load_model(model_name)
     num_of_weights = model.count_params()
+    model.summary()
     print("Loaded model with ", str(num_of_weights), " weights")
     return model
