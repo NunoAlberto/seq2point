@@ -21,16 +21,15 @@ class Tester():
     Parameters:
     __appliance (string): The target appliance.
     __algorithm (string): The (pruning) algorithm the model was trained with.
-    __network_type (string): The architecture of the model.
     __crop (int): The maximum number of rows of data to evaluate the model with.
-    __batch_size (int): The number of rows per testing batch.
-    __window_size (int): The size of eaech sliding window
+    __network_type (string): The architecture of the model.
+    __window_size (int): The size of each sliding window
     __window_offset (int): The offset of the inferred value from the sliding window.
     __test_directory (string): The directory of the test file for the model.
     
     """
 
-    def __init__(self, appliance, algorithm, crop, batch_size, network_type,
+    def __init__(self, appliance, algorithm, crop, network_type,
                  test_directory, saved_model_dir, log_file_dir,
                  input_window_length):
         self.__appliance = appliance
@@ -38,16 +37,10 @@ class Tester():
         self.__network_type = network_type
 
         self.__crop = crop
-        self.__batch_size = batch_size
         self._input_window_length = input_window_length
         self.__window_size = self._input_window_length + 2
         self.__window_offset = int(0.5 * self.__window_size - 1)
         self.__number_of_windows = 100
-        #self.__number_of_windows = 800
-        #self.__number_of_windows = -1
-        #self.__number_of_windows = 129
-        #self.__number_of_windows = 550
-        #self.__number_of_windows = 80
 
         self.__test_directory = test_directory
         self.__saved_model_dir = saved_model_dir
@@ -95,36 +88,7 @@ class Tester():
     def accuracy(self, TP, FN, FP, TN):
         return (TP + TN) / (TP + FN + FP + TN)
 
-    """def mae(self, prediction, true):
-        #print("Starting MAE")
-        print(prediction.shape, true.shape)
-        MAE = abs(true - prediction)
-        #print("MAE 1 = ", str(MAE))
-        MAE = np.sum(MAE)
-        #print("MAE 2 = ", str(MAE))
-        MAE = MAE / len(prediction)
-        #print("MAE 3 = ", str(MAE))
-        return MAE
-
-    # is it correct?
-    def sae(self, prediction, true):
-        print("Starting SAE")
-        SAE = abs(true - prediction)
-        #print("SAE 1 = ", str(SAE))
-        SAE = np.sum(SAE)
-        #print("SAE 1 = ", str(SAE))
-        return SAE"""
-
     def mae(self, prediction, true):
-        """print(prediction.shape)
-        print(true.shape)"""
-        """MAE = abs(true - prediction)
-        #print("1: ", str(MAE))
-        MAE = np.sum(MAE)
-        #print("2: ", str(MAE))
-        MAE = MAE / len(prediction)
-        #print("3: ", str(MAE))"""
-
         MAE = 0
         for i in range(len(prediction)):
             MAE += abs(true[i] - prediction[i])
@@ -144,9 +108,7 @@ class Tester():
             true_r = np.sum(true[startIndex:lastIndex])
             SAE += abs(true_r - pred_r)/K
             
-        #print("1: ", str(SAE))
         SAE = SAE / N
-        #print("2: ", str(SAE))
         return SAE
 
     def rmse(self, prediction, true):
@@ -170,15 +132,11 @@ class Tester():
 
         test_generator = TestSlidingWindowGenerator(number_of_windows=self.__number_of_windows, inputs=test_input, targets=test_target, offset=self.__window_offset)
 
-        # Calculate the optimum steps per epoch.
-        steps_per_test_epoch = np.round(math.floor(test_generator.max_number_of_windows / self.__number_of_windows)-math.floor(self._input_window_length/self.__number_of_windows), decimals=0)
-        #steps_per_test_epoch = np.round(math.floor(test_generator.max_number_of_windows / self.__number_of_windows), decimals=0)
-        #np.round(int(test_generator.total_size / self.__batch_size), decimals=0)
-        #1827 for fridge
+        # Calculates the optimum steps per epoch.
         steps_per_test_epoch = np.round(test_generator.max_number_of_windows // self.__number_of_windows, decimals=0)
         print("steps_per_test_epoch: " + str(steps_per_test_epoch))
 
-        # Test the model.
+        # Tests the model.
         start_time = time.time()
         testing_history = model.predict(x=test_generator.load_dataset(), verbose=2)
 
@@ -208,7 +166,6 @@ class Tester():
         data_frame = pd.read_csv(directory, nrows=self.__crop, skiprows=0, header=0)
         test_input = np.round(np.array(data_frame.iloc[:, 0], float), 6)
         test_target = np.round(np.array(data_frame.iloc[self.__window_offset: -self.__window_offset, 1], float), 6)
-        #test_target = np.round(np.array(data_frame.iloc[:, 1], float), 6)
         print("The dataset contains ", len(test_input), " rows")
 
         del data_frame
@@ -233,7 +190,6 @@ class Tester():
         metric_string = "MSE: ", str(evaluation_metrics[0]), " MAE: ", str(evaluation_metrics[3])
         logging.info(metric_string)
 
-        #commented out
         self.count_pruned_weights(model)  
 
     def count_pruned_weights(self, model):
@@ -303,75 +259,31 @@ class Tester():
 
         """
 
-        """print("Here 1")
-        comparable_metric_string = "Own defined metrics (before post-processing) - MAE: ", str(self.mae(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target))
-        print("Here 1.5")
-        logging.info(comparable_metric_string)
-        print("Here 1/2")"""
-
         testing_history = ((testing_history.flatten() * appliance_data[self.__appliance]["std"]) + appliance_data[self.__appliance]["mean"])
         test_target = ((test_target.flatten() * appliance_data[self.__appliance]["std"]) + appliance_data[self.__appliance]["mean"])
         test_agg = (test_input.flatten() * mains_data["std"]) + mains_data["mean"]
-        #test_agg = test_agg[:testing_history.size]
-
-        #print("Here 2")
-
-        print(max(test_target), np.ceil(max(test_target)/2), np.ceil(max(test_target)*0.2))
-        thresholdPredictions = np.ceil(max(test_target)/2)
-        thresholdTarget = round(np.percentile(test_target, 25), 0)
-        print(thresholdPredictions, thresholdTarget)
 
         thresholdPredictions = 815 #microwave
         #thresholdPredictions = 45 #fridge
         #thresholdPredictions = 25 #dishwasher
         #thresholdPredictions = 40 #washing machine
-        #comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(MAE/10), " SAE: ", str(SAE/10), " F1: ", str(F1/10)
 
         TP, FN, FP, TN = self.confusionMatrix(testing_history, test_target, thresholdPredictions)
         comparable_metric_string = "Before post-processing - MAE: ", str(self.mae(testing_history, test_target)), " RMSE: ", str(self.rmse(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 450)), " Precision: ", str(self.precision(TP, FP)), " Recall: ", str(self.recall(TP, FN)), " F1: ", str(self.f1(self.precision(TP, FP), self.recall(TP, FN))), " Accuracy: ", str(self.accuracy(TP, FN, FP, TN))
         logging.info(comparable_metric_string)
-        print("Own defined metrics logging done successfully!")
+        print("Own defined metrics, before post-processing, logging done successfully!")
 
-        # Can't have negative energy readings - set any results below 0 to 0.
-        print(test_target[2900:3100])
-        print(test_target[6200:7900])
-        print(np.percentile(test_target, 50), thresholdTarget)
         test_target[test_target <= 10] = 0
         testing_history[testing_history <= thresholdPredictions] = 0
         test_input[test_input < 0] = 0
 
-        """MAE = 0
-        SAE = 0
-        F1 = 0
-        for index in range(10):
-            subsequenceLength = int(len(testing_history)/10)
-            MAE_i = self.mae(testing_history[index * subsequenceLength:(index + 1) * subsequenceLength], test_target[index * subsequenceLength:(index + 1) * subsequenceLength])
-            SAE_i = self.sae(testing_history[index * subsequenceLength:(index + 1) * subsequenceLength], test_target[index * subsequenceLength:(index + 1) * subsequenceLength], 1200)
-            F1_i = self.f1(testing_history[index * subsequenceLength:(index + 1) * subsequenceLength], test_target[index * subsequenceLength:(index + 1) * subsequenceLength])
-
-            MAE += MAE_i
-            SAE += SAE_i
-            F1 += F1_i"""
-
-
-        #comparable_metric_string = "Own defined metrics (after post-processing) - MAE: ", str(MAE/10), " SAE: ", str(SAE/10), " F1: ", str(F1/10)
         TP, FN, FP, TN = self.confusionMatrix(testing_history, test_target, thresholdPredictions)
         comparable_metric_string = "After post-processing - MAE: ", str(self.mae(testing_history, test_target)), " RMSE: ", str(self.rmse(testing_history, test_target)), " SAE: ", str(self.sae(testing_history, test_target, 450)), " Precision: ", str(self.precision(TP, FP)), " Recall: ", str(self.recall(TP, FN)), " F1: ", str(self.f1(self.precision(TP, FP), self.recall(TP, FN))), " Accuracy: ", str(self.accuracy(TP, FN, FP, TN))
         logging.info(comparable_metric_string)
-        print("Own defined metrics logging done successfully!")
+        print("Own defined metrics, after post-processing, logging done successfully!")
 
-        # Plot testing outcomes against ground truth.
-        """plt.figure(1)
-        plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
-        plt.plot(test_target[self.__window_offset: -self.__window_offset], label="Ground Truth")
-        plt.plot(testing_history, label="Predicted")
-        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
-        plt.ylabel("Power Value (Watts)")
-        plt.xlabel("Testing Window")
-        plt.legend()"""
-
+        # Plots testing outcomes against ground truth.
         plt.figure(1)
-        #plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
         plt.plot(test_target, label="Ground Truth")
         plt.plot(testing_history, label="Predicted")
         plt.title(self.__appliance)
@@ -384,7 +296,6 @@ class Tester():
 
         #microwave
         plt.figure(2)
-        #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
         plt.plot(test_target[2970:3080], label="Ground Truth")
         plt.plot(testing_history[2970:3080], label="Predicted")
         plt.title("Microwave")
@@ -394,7 +305,6 @@ class Tester():
         
         """#fridge
         plt.figure(2)
-        #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
         plt.plot(test_target[5915:6085], label="Ground Truth")
         plt.plot(testing_history[5915:6085], label="Predicted")
         plt.title("Fridge")
@@ -404,7 +314,6 @@ class Tester():
         
         """#dishwasher
         plt.figure(2)
-        #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
         plt.plot(test_target[100600:101170], label="Ground Truth")
         plt.plot(testing_history[100600:101170], label="Predicted")
         plt.title("Dishwasher")
@@ -414,7 +323,6 @@ class Tester():
 
         """#washing machine
         plt.figure(2)
-        #plt.plot(test_agg[self.__window_offset+2500: -self.__window_offset+1500], label="Aggregate")
         plt.plot(test_target[92440:93250], label="Ground Truth")
         plt.plot(testing_history[92440:93250], label="Predicted")
         plt.title("Washing Machine")
@@ -422,90 +330,7 @@ class Tester():
         plt.xlabel("Timestep")
         plt.legend()"""
 
-        """plt.figure(1)
-        plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
-        plt.plot(test_target[:test_agg.size - (2 * self.__window_offset)], label="Ground Truth")
-        plt.plot(testing_history[:test_agg.size - (2 * self.__window_offset)], label="Predicted")
-        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
-        plt.ylabel("Power Value (Watts)")
-        plt.xlabel("Testing Window")
-        plt.legend()"""
-
         file_path = "./" + "saved_models/" + self.__appliance + "_" + "_activationTestPredictions.png"
         plt.savefig(fname=file_path)
 
         print(test_agg.shape, test_target.shape, testing_history.shape)
-
-        """plt.figure(2)
-        plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
-        plt.plot(test_target[:test_agg.size - (2 * self.__window_offset)], label="Ground Truth")
-        #plt.plot(testing_history[:test_agg.size - (2 * self.__window_offset)], label="Predicted")
-        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
-        plt.ylabel("Power Value (Watts)")
-        plt.xlabel("Testing Window")
-        plt.legend()
-
-        file_path = "./" + "saved_models/" + self.__appliance + "_" + self.__algorithm + "_" + self.__network_type + "_test_figure (aggregate vs ground truth).png"
-        plt.savefig(fname=file_path)
-
-        plt.figure(3)
-        plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
-        #plt.plot(test_target[:test_agg.size - (2 * self.__window_offset)], label="Ground Truth")
-        plt.plot(testing_history[:test_agg.size - (2 * self.__window_offset)], label="Predicted")
-        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
-        plt.ylabel("Power Value (Watts)")
-        plt.xlabel("Testing Window")
-        plt.legend()
-
-        file_path = "./" + "saved_models/" + self.__appliance + "_" + self.__algorithm + "_" + self.__network_type + "_test_figure (aggregate vs predicted).png"
-        plt.savefig(fname=file_path)
-
-        plt.figure(4)
-        #plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
-        plt.plot(test_target[:test_agg.size - (2 * self.__window_offset)], label="Ground Truth")
-        plt.plot(testing_history[:test_agg.size - (2 * self.__window_offset)], label="Predicted")
-        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
-        plt.ylabel("Power Value (Watts)")
-        plt.xlabel("Testing Window")
-        plt.legend()
-
-        file_path = "./" + "saved_models/" + self.__appliance + "_" + self.__algorithm + "_" + self.__network_type + "_test_figure (ground truth vs predicted).png"
-        plt.savefig(fname=file_path)
-
-        plt.figure(5)
-        plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
-        #plt.plot(test_target[:test_agg.size - (2 * self.__window_offset)], label="Ground Truth")
-        #plt.plot(testing_history[:test_agg.size - (2 * self.__window_offset)], label="Predicted")
-        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
-        plt.ylabel("Power Value (Watts)")
-        plt.xlabel("Testing Window")
-        plt.legend()
-
-        file_path = "./" + "saved_models/" + self.__appliance + "_" + self.__algorithm + "_" + self.__network_type + "_test_figure (aggregate).png"
-        plt.savefig(fname=file_path)
-
-        plt.figure(6)
-        #plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
-        plt.plot(test_target[:test_agg.size - (2 * self.__window_offset)], label="Ground Truth")
-        #plt.plot(testing_history[:test_agg.size - (2 * self.__window_offset)], label="Predicted")
-        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
-        plt.ylabel("Power Value (Watts)")
-        plt.xlabel("Testing Window")
-        plt.legend()
-
-        file_path = "./" + "saved_models/" + self.__appliance + "_" + self.__algorithm + "_" + self.__network_type + "_test_figure (ground truth).png"
-        plt.savefig(fname=file_path)
-
-        plt.figure(7)
-        #plt.plot(test_agg[self.__window_offset: -self.__window_offset], label="Aggregate")
-        #plt.plot(test_target[:test_agg.size - (2 * self.__window_offset)], label="Ground Truth")
-        plt.plot(testing_history[:test_agg.size - (2 * self.__window_offset)], label="Predicted")
-        plt.title(self.__appliance + " " + self.__network_type + "(" + self.__algorithm + ")")
-        plt.ylabel("Power Value (Watts)")
-        plt.xlabel("Testing Window")
-        plt.legend()
-
-        file_path = "./" + "saved_models/" + self.__appliance + "_" + self.__algorithm + "_" + self.__network_type + "_test_figure (predicted).png"
-        plt.savefig(fname=file_path)"""
-
-        #plt.show()

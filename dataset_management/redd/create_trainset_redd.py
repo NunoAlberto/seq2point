@@ -5,6 +5,12 @@ import time
 import argparse
 import os
 
+# pre-processes the original REDD dataset and splits and saves it into training, validation and testing CSVs
+
+#python ./dataset_management/redd/create_trainset_redd.py --appliance_name microwave --save_path ./microwaveData/
+#python ./dataset_management/redd/create_trainset_redd.py --appliance_name fridge --save_path ./fridgeData/
+#python ./dataset_management/redd/create_trainset_redd.py --appliance_name dishwasher --save_path ./dishwasherData/
+#python ./dataset_management/redd/create_trainset_redd.py --appliance_name washingmachine --save_path ./washingmachineData/
 
 DATA_DIRECTORY = '../redd-original/'
 SAVE_PATH = './microwaveData/'
@@ -25,7 +31,6 @@ def get_arguments():
     parser.add_argument('--save_path', type=str, default=SAVE_PATH,
                           help='The directory to store the training data')
     return parser.parse_args()
-
 
 start_time = time.time()
 args = get_arguments()
@@ -50,7 +55,7 @@ def main():
                 str(params_appliance[appliance_name]['channels'][params_appliance[appliance_name]['houses'].index(h)]) +
                 '.dat')
 
-        # read data
+        # reads the mains data
         mains1_df = pd.read_table(args.data_dir + '/' + 'house_' + str(h) + '/' + 'channel_' +
                                       str(1) + '.dat',
                                       sep="\s+",
@@ -70,13 +75,14 @@ def main():
                                       )
         
         try:
-            length = len(params_appliance[appliance_name]['channels'][params_appliance[appliance_name]['houses'].index(h)])
+            len(params_appliance[appliance_name]['channels'][params_appliance[appliance_name]['houses'].index(h)])
             isList = True
             print("House has multiple channels for the target appliance")
         except:
             isList = False
             print("House only has one channel for the target appliance")
 
+        # checks if the appliance data comes from multiple channels
         if (isList):
             app_df_list = []
             print(params_appliance[appliance_name]['channels'][params_appliance[appliance_name]['houses'].index(h)])
@@ -127,12 +133,9 @@ def main():
         mains_df = mains1_df.join(mains2_df, how='outer')
 
         mains_df['aggregate'] = mains_df.iloc[:].sum(axis=1)
-        #resample = mains_df.resample(str(sample_seconds) + 'S').mean()
 
         mains_df.reset_index(inplace=True)
 
-
-        # deleting original separate mains
         del mains_df['mains1'], mains_df['mains2']
 
         if debug:
@@ -141,50 +144,36 @@ def main():
             plt.plot(mains_df['time'], mains_df['aggregate'])
             plt.show()
 
-            # Appliance
-            # app_df = app_df.set_index(app_df.columns[0])
-            # app_df.index = pd.to_datetime(app_df.index, unit='s')
-        #app_df['time'] = pd.to_datetime(app_df['time'], unit='s')
-            # app_df.columns = [appliance_name]
         if debug:
             print("app_df:")
             print(app_df.head())
             plt.plot(app_df['time'], app_df[appliance_name])
             plt.show()
 
-            # the timestamps of mains and appliance are not the same, we need to align them
-            # 1. join the aggragte and appliance dataframes;
-            # 2. interpolate the missing values;
         mains_df.set_index('time', inplace=True)
         app_df.set_index('time', inplace=True)
 
+        # the timestamps of mains and appliance are not the same, need to align them
+        # 1. join the aggregate and appliance dataframes;
+        # 2. resample by taking the mean over sample_seconds seconds sequences;
+        # 3. interpolate the missing values;
         df_align = mains_df.join(app_df, how='outer'). \
                 resample(str(sample_seconds) + 'S').mean().fillna(method='backfill', limit=1)
         df_align = df_align.dropna()
 
         df_align.reset_index(inplace=True)
-            #print(df_align.count())
-            # df_align['OVER 5 MINS'] = (df_align['time'].diff()).dt.seconds > 9
-            # df_align.plot()
-            # plt.plot(df_align['OVER 5 MINS'])
-            # plt.show()
 
         del mains1_df, mains2_df, mains_df, app_df, df_align['time']
 
-        mains = df_align['aggregate'].values
-        app_data = df_align[appliance_name].values
-            # plt.plot(np.arange(0, len(mains)), mains, app_data)
-            # plt.show()
-
         if debug:
-                # plot the dtaset
+            # plots the dataset
             print("df_align:")
             print(df_align.head())
             plt.plot(df_align['aggregate'].values)
             plt.plot(df_align[appliance_name].values)
             plt.show()
 
-        # Normilization
+        # standardisation
         mean = params_appliance[appliance_name]['mean']
         std = params_appliance[appliance_name]['std']
 
@@ -200,30 +189,25 @@ def main():
             print("    Size of test set is {:.4f} M rows.".format(len(df_align) / 10 ** 6))
             continue
 
-
         train = train.append(df_align, ignore_index=True)
         del df_align
 
-        # Validation CSV
+    # Validation CSV
     val_len = int((len(train)/100)*validation_percent)
 
-    # MAYBE INTRODUCE SOME RANDOMNESS INSTEAD OF HOUSE 5 ONLY
     val = train.tail(val_len)
     val.reset_index(drop=True, inplace=True)
     train.drop(train.index[-val_len:], inplace=True)
     val.to_csv(args.save_path + appliance_name + '_validation_' + '.csv', mode='a', index=False, header=False)
 
-        # Training CSV
+    # Training CSV
     train.to_csv(args.save_path + appliance_name + '_training_.csv', mode='a', index=False, header=False)
 
     print("    Size of total training set is {:.4f} M rows.".format(len(train) / 10 ** 6))
     print("    Size of total validation set is {:.4f} M rows.".format(len(val) / 10 ** 6))
     del train, val
 
-
-
     print("\nPlease find files in: " + args.save_path)
-    #tot = int(int(time.time() - start_time) / 60)
     print("Total elapsed time: {:.2f} min.".format((time.time() - start_time) / 60))
 
 

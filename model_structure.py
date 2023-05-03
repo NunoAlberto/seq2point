@@ -16,9 +16,6 @@ def create_model(input_window_length):
     input_layer = tf.keras.layers.Input(shape=(input_window_length,))
     reshape_layer_1 = tf.keras.layers.Reshape((input_window_length, 1))(input_layer)
 
-    # filters = 16,32,64
-    # kernel_size = 4,8,16
-    # decrease/increase number of filters and sizes?
     conv_layer_1 = tf.keras.layers.Convolution1D(filters=32, kernel_size=7, strides=1, padding="same")(reshape_layer_1)
     normalization_1 = tf.keras.layers.BatchNormalization()(conv_layer_1)
     activation_1 = tf.keras.layers.Activation('relu')(normalization_1)
@@ -34,36 +31,18 @@ def create_model(input_window_length):
     activation_3 = tf.keras.layers.Activation('relu')(normalization_3)
     max_pool_3 = tf.keras.layers.MaxPooling1D(pool_size=2, strides=2, padding='valid')(activation_3)
 
-    #conv_layer_4 = tf.keras.layers.Convolution1D(filters=64, kernel_size=3, strides=1, padding="same", activation="relu")(conv_layer_3)
-    #max_pool_4 = tf.keras.layers.MaxPooling1D(pool_size=2, strides=2, padding='valid')(conv_layer_4)
-    #conv_layer_5 = tf.keras.layers.Convolution1D(filters=96, kernel_size=4, strides=1, padding="same", activation="relu")(conv_layer_4)
-    #max_pool_5 = tf.keras.layers.MaxPooling1D(pool_size=2, strides=2, padding='valid')(conv_layer_5)
-
-    # reshape_layer_2 = tf.keras.layers.Reshape((input_window_length, 50))(conv_layer_5)
-    # units = 256,512,1024
-    # decrease/increase number of units?
-    """biDirectionalLstm_1 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32, activation="tanh", return_sequences=True, dropout=0.5, recurrent_dropout=0.5), merge_mode="concat")(max_pool_5)
-     biDirectionalLstm_2 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64, activation="tanh", return_sequences=True, dropout=0.5, recurrent_dropout=0.5), merge_mode="concat")(biDirectionalLstm_1)"""
-
     biDirectionalLstm_1 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128, activation="tanh", return_sequences=True), merge_mode="concat")(max_pool_3)
-    #biDirectionalLstm_2 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128, activation="tanh", return_sequences=True), merge_mode="concat")(biDirectionalLstm_1)
     flatten_layer = tf.keras.layers.Flatten()(biDirectionalLstm_1)
-    #dropout_layer_1 = tf.keras.layers.Dropout(rate=0.5)(flatten_layer)
 
-    # decrease/increase number of units?
     label_layer_1 = tf.keras.layers.Dense(128)(flatten_layer)
     normalization_5 = tf.keras.layers.BatchNormalization()(label_layer_1)
     activation_5 = tf.keras.layers.Activation('relu')(normalization_5)
     dropout_layer_2 = tf.keras.layers.Dropout(rate=0.5)(activation_5)
- 
-    """label_layer_2 = tf.keras.layers.Dense(128)(dropout_layer_2)
-    normalization_6 = tf.keras.layers.BatchNormalization()(label_layer_2)
-    activation_6 = tf.keras.layers.Activation('relu')(normalization_6)
-    dropout_layer_3 = tf.keras.layers.Dropout(rate=0.5)(activation_6)"""
 
     output_layer = tf.keras.layers.Dense(1, activation="linear")(dropout_layer_2)
 
     model = tf.keras.Model(inputs=input_layer, outputs=output_layer)
+
     return model
 
 def save_model(model, network_type, algorithm, appliance, save_model_dir):
@@ -79,7 +58,6 @@ def save_model(model, network_type, algorithm, appliance, save_model_dir):
 
     """
     
-    #model_path = "saved_models/" + appliance + "_" + algorithm + "_" + network_type + "_model.h5"
     model_path = save_model_dir
 
     if not os.path.exists (model_path):
@@ -99,7 +77,6 @@ def load_model(model, network_type, algorithm, appliance, saved_model_dir):
 
     """
 
-    #model_name = "saved_models/" + appliance + "_" + algorithm + "_" + network_type + "_model.h5"
     model_name = saved_model_dir
     print("PATH NAME: ", model_name)
 

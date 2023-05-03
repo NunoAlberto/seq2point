@@ -7,7 +7,7 @@ import pandas as pd
 
 class TrainSlidingWindowGenerator():
 
-    """Yields features and targets for training a ConvNet.
+    """Yields inputs and targets for training.
 
     Parameters:
     __file_name (string): The path where the training dataset is located.
@@ -56,7 +56,7 @@ class TrainSlidingWindowGenerator():
 
     def check_if_chunking(self):
 
-        """Count the number of rows in the dataset and determine whether this is larger than the chunking 
+        """Counts the number of rows in the dataset and determine whether this is larger than the chunking 
         threshold or not. """
 
         # Loads the file and counts the number of rows it contains.
@@ -74,7 +74,7 @@ class TrainSlidingWindowGenerator():
 
         print("The dataset contains ", self.total_size, " rows")
 
-        # Display a warning if there are too many rows to fit in the designated amount RAM.
+        # Displays a warning if there are too many rows to fit in the designated amount RAM.
         if (self.total_size > self.__ram_threshold):
             print("There is too much data to load into memory, so it will be loaded in chunks. Please note that this may result in decreased training times.")
     
@@ -102,7 +102,6 @@ class TrainSlidingWindowGenerator():
             outputs = data_array[:, 1]
 
             maximum_batch_size = len(inputs) - 2 * self.__offset
-            #maximum_batch_size = inputs.size
             print("maximum_batch_size: " + str(maximum_batch_size))
 
             self.total_num_samples = maximum_batch_size
@@ -121,7 +120,7 @@ class TrainSlidingWindowGenerator():
 
                     yield input_data, output_data
                     
-        # Skip rows where needed to allow data to be loaded properly when there is not enough memory.
+        # Skips rows where needed to allow data to be loaded properly when there is not enough memory.
         if (self.total_size >= self.__ram_threshold):
             number_of_chunks = np.arange(self.total_size / self.__chunk_size)
             print("self.__chunk_size: " + str(self.__chunk_size))
@@ -130,7 +129,7 @@ class TrainSlidingWindowGenerator():
             if self.__shuffle:
                 np.random.shuffle(number_of_chunks)
 
-            # Yield the data in sections.
+            # Yields the data in sections.
             for index in number_of_chunks:
                 data_array = np.array(pd.read_csv(self.__file_name, skiprows=int(index) * self.__chunk_size, header=0, nrows=self.__crop))                   
                 inputs = data_array[:, 0]
@@ -185,7 +184,6 @@ class TestSlidingWindowGenerator(object):
 
         self.__inputs = self.__inputs.flatten()
         self.max_number_of_windows = len(self.__inputs) - 2 * self.__offset 
-        #self.max_number_of_windows = len(self.__targets)
         print("max_number_of_windows:" + str(self.max_number_of_windows))
 
         if self.__number_of_windows < 0:
@@ -194,12 +192,7 @@ class TestSlidingWindowGenerator(object):
         print("__number_of_windows:" + str(self.__number_of_windows))
         indicies = np.arange(self.max_number_of_windows, dtype=int)
         for start_index in range(0, self.max_number_of_windows, self.__number_of_windows):
-            """print("start_index:" + str(start_index))
-            print("start_index + self.__number_of_windows:" + str(start_index + self.__number_of_windows))"""
             splice = indicies[start_index : start_index + self.__number_of_windows]
             input_data = np.array([self.__inputs[index : index + 2 * self.__offset + 1] for index in splice])
-            """print("splice:" + str(splice))
-            print("self.__offset:" + str(self.__offset))"""
-            #target_data = self.__targets[splice + self.__offset].reshape(-1, 1)
             target_data = self.__targets[splice].reshape(-1, 1)
             yield input_data, target_data

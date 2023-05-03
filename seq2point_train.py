@@ -55,7 +55,6 @@ class Trainer():
         self.__input_window_length = input_window_length
         self.__window_size = 2+self.__input_window_length
         self.__window_offset = int((0.5 * self.__window_size) - 1)
-        #self.__window_offset = int(1)
 
         print("__input_window_length: " + str(self.__input_window_length))
         print("__window_size: " + str(self.__window_size))
@@ -64,14 +63,10 @@ class Trainer():
         self.__max_chunk_size = 5 * 10 ** 2
         self.__validation_frequency = validation_frequency
         self.__ram_threshold=5*10**5
-        #self.__skip_rows_train=10000000
         self.__skip_rows_train=0
         self.__validation_steps=100
         self.__skip_rows_val = 0
 
-        # Directories of the training and validation files. Always has the structure 
-        # ./dataset_management/refit/{appliance_name}/{appliance_name}_training_.csv for training or 
-        # ./dataset_management/refit/{appliance_name}/{appliance_name}_validation_.csv
         self.__training_directory = training_directory
         self.__validation_directory = validation_directory
 
@@ -96,9 +91,7 @@ class Trainer():
         """ Trains an energy disaggregation model using a user-selected pruning algorithm (default is no pruning). 
         Plots and saves the resulting model. """
 
-        # Calculate the optimum steps per epoch.
-        # self.__training_chunker.check_if_chunking()
-        #steps_per_training_epoch = np.round(int(self.__training_chunker.total_size / self.__batch_size), decimals=0)
+        # Calculates the optimum steps per epoch.
         print("self.__training_chunker.total_num_samples: ", str(self.__training_chunker.total_num_samples))
         steps_per_training_epoch = np.round(self.__training_chunker.total_num_samples // self.__batch_size, decimals=0)
 
@@ -107,9 +100,9 @@ class Trainer():
         model = create_model(self.__input_window_length)
 
         model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.__learning_rate, beta_1=self.__beta_1, beta_2=self.__beta_2), loss=self.__loss, metrics=self.__metrics) 
+
         early_stopping = tf.keras.callbacks.EarlyStopping(monitor="val_loss", min_delta=self.__min_delta, patience=self.__patience, verbose=self.__verbose, mode="min", restore_best_weights=True)
 
-        ## can use checkpoint ###############################################
         checkpoint_filepath = "./checkpoints/"+ self.__appliance + ".{epoch:03d}-{val_loss:.5f}.h5"
         model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
              filepath = checkpoint_filepath,
@@ -118,11 +111,9 @@ class Trainer():
              save_weights_only=False,
              mode='min',
              save_freq="epoch",
-             save_best_only=False)        
+             save_best_only=False)       
+         
         callbacks=[early_stopping, model_checkpoint_callback]
-        ###################################################################
-
-        #callbacks=[early_stopping]
 
         model.summary()
         
@@ -151,19 +142,7 @@ class Trainer():
         at the end of each training epoch.
 
         """
-        # ########### this is retired ##############################
-        # training_history = model.fit_generator(self.__training_chunker.load_dataset(),
-        #     steps_per_epoch=steps_per_training_epoch,
-        #     epochs=1,
-        #     verbose=1,
-        #     validation_data = self.__validation_chunker.load_dataset(),
-        #     validation_steps=100,
-        #     validation_freq=self.__validation_frequency,
-        #     callbacks=[early_stopping])
-        ############################################################
 
-        #self.__validation_steps = np.round(int(self.__validation_chunker.total_size / self.__batch_size), decimals=0)
-        print("self.__validation_chunker.total_num_samples: ", str(self.__validation_chunker.total_num_samples))
         self.__validation_steps = np.round(self.__validation_chunker.total_num_samples // self.__batch_size, decimals=0)
         print("__batch_size: " + str(self.__batch_size))
         print("total_num_samples: " + str(self.__validation_chunker.total_num_samples))

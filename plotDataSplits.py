@@ -3,6 +3,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import time
 
+# plots and saves the data splits graphs of all the target appliances
+
+# python plotDataSplits.py
+
 count = 1
 applianceNames = ['Washing machine', 'Dishwasher', 'Fridge', 'Microwave']
 
@@ -22,7 +26,7 @@ for index, appliance in enumerate(['washingmachine', 'dishwasher', 'fridge', 'mi
         plt.xlabel('Timestep')
         plt.legend()
 
-        graphPath = "./" + str(type) + "-" + str(appliance) + ".png"
+        graphPath = "./" + appliance + "Data/" + str(type) + "-" + str(appliance) + ".png"
         plt.savefig(fname=graphPath)
 
         count += 1
